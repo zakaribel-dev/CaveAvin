@@ -8,6 +8,8 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
 		integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
 	<style>
 		#msg {
 			position: fixed;
@@ -21,8 +23,7 @@
 			justify-content: center;
 		}
 
-		#msgModalAdd,
-		#msgmodalEdit {
+		#msgModal{
 			color: red;
 			text-align: center;
 		}
@@ -35,7 +36,6 @@
 		table {
 			border: 3px solid rgb(129, 82, 82) !important;
 		}
-
 
 		h1,
 		h2,
@@ -60,6 +60,10 @@
 			margin-left: 46%;
 			font-weight: bolder;
 		}
+	    .inputSearch{
+        border-radius: 25px;
+		text-align: center;
+        }
 	</style>
 </head>
 
@@ -92,25 +96,25 @@
 		</div>
 	</nav>
 	<div class="container">
-		<h1>Voici la liste des appellations</h1>
+		<h1 class="display-1">Liste des appellations</h1>
 
 		<form id="form_id">
-			<input type="text" id="code" class="border border-dark" placeholder="Saisir un code appellation">
-			<button type="submit" class="fas fa-search"></button>
-			<button id="reload">réafficher la liste des appellations</button>
+			<input type="text" id="code" class="inputSearch" placeholder="Saisir un code vin">
+			<button type="submit" class="fas fa-search rounded-circle"></button> <br><br>
+			<button id="reload" class="btn btn-secondary">réafficher la liste vins</button>
 		</form>
 		<br>
 
 		<!-- AJOUT -->
 
-		<button id="new_appellation" class="btn-danger">+ Nouveau</button>
+		<button id="new_appellation" class="btn btn-danger">+ Nouveau</button>
 		<button id="scrollButton" class="btn btn-warning">Descendre tout en bas</button>
 
 		<div class="modal fade" id="addModal" aria-labelledby="ModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 
 				<div class="modal-content">
-					<div id="msgModalAdd"></div>
+					<div id="msgModal"></div>
 					<div class="modal-body">
 
 						<h5 class="modal-addAppellation"></h5><br>

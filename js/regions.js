@@ -85,9 +85,9 @@ window.addEventListener("load", () => {
           const AddNomRegionInput =document.getElementById("addNomRegion").value;
           const select = document.getElementById("id_select").value;
           if (AddNomRegionInput.length === 0) {
-            const msgModal = document.getElementById("msgModal");
-            msgModal.innerHTML =
-              "Merci de bien vouloir remplire les champs demandés.";
+            
+            Swal.fire('Hey &#128545; !', '<b>Merci de remplir tous les champs demandés...</b>', 'error');
+
           } else {
             let requestOptionsAdd = {
               method: "POST",
@@ -275,7 +275,13 @@ function displayMsg(deleteRow, editRow, row) {
 }
 
 
-  function searchRegions(code) {
+function searchRegions(code) {
+  if (code) {
+    btnReload.style.visibility = "visible";
+    btnReload.addEventListener("click", () => {
+      location.reload();
+    });
+
     const rows = table.getElementsByTagName("tr");
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
@@ -287,7 +293,10 @@ function displayMsg(deleteRow, editRow, row) {
         row.style.display = "";
       }
     }
+  } else {
+    Swal.fire('Hey &#128545; !', "<b>Merci d'entrer un code...</b>", 'error');
   }
+}
 
   const form = document.getElementById("form_id");
   const codeInput = document.getElementById("code");
@@ -298,13 +307,11 @@ function displayMsg(deleteRow, editRow, row) {
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    btnReload.style.visibility = "visible";
-    btnReload.addEventListener("click", () => {
-      location.reload();
-    });
+  
     const code = codeInput.value;
     searchRegions(code);
   });
+
   
   scrollDownButton.addEventListener('click', function() {
     const bottomElement = document.documentElement;

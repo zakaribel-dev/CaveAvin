@@ -32,7 +32,7 @@ window.addEventListener("load", () => {
                 actionsTd.style.width = "150px";
                 
 // ici je cherche à savoir si le code couleur de l'api COULEUR (color.CODECOULEUR) 
-//match bien avec le code couleur de l'api VIN (vinElement.CODECOULEUR)
+// match bien avec le code couleur de l'api VIN (vinElement.CODECOULEUR)
                 let colorObj = vinElement.COULEUR.find((color) => color.CODECOULEUR === vinElement.CODECOULEUR);
 
                 if (colorObj) {
@@ -151,9 +151,9 @@ window.addEventListener("load", () => {
             console.log(selectAppellation);
 
             if (AddNomVin.length === 0 || AddCulture.length === 0 || AddCommentaire.length === 0) {
-              const msgModal = document.getElementById("msgModal");
-              msgModal.innerHTML =
-                "Merci de bien vouloir remplire les champs demandés.";
+             
+                Swal.fire('Hey &#128545; !', '<b>Merci de remplir tous les champs demandés...</b>', 'error');
+
             } else {
               let requestOptionsAdd = {
                 method: "POST",
@@ -406,7 +406,13 @@ window.addEventListener("load", () => {
   
   }
   
-    function searchRegions(code) {
+  function searchWines(code) {
+    if (code) {
+      btnReload.style.visibility = "visible";
+      btnReload.addEventListener("click", () => {
+        location.reload();
+      });
+
       const rows = table.getElementsByTagName("tr");
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
@@ -418,7 +424,10 @@ window.addEventListener("load", () => {
           row.style.display = "";
         }
       }
+    } else {
+      Swal.fire('Hey &#128545; !', "<b>Merci d'entrer un code...</b>", 'error');
     }
+  }
   
     const form = document.getElementById("form_id");
     const codeInput = document.getElementById("code");
@@ -429,12 +438,9 @@ window.addEventListener("load", () => {
   
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      btnReload.style.visibility = "visible";
-      btnReload.addEventListener("click", () => {
-        location.reload();
-      });
+    
       const code = codeInput.value;
-      searchRegions(code);
+      searchWines(code);
     });
 
     scrollDownButton.addEventListener('click', function() {

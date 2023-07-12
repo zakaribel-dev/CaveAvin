@@ -44,8 +44,9 @@ window.addEventListener('load', () => {
            
 
             if (AddNomPaysInput.value.length === 0 ) {
-              const msgModal = document.getElementById('msgModal');
-              msgModal.innerHTML = "Merci de bien vouloir remplire les champs demandés.";
+
+              Swal.fire('Hey &#128545; !', '<b>Merci de remplir tous les champs demandés...</b>', 'error');
+
             } else {
               newDataToAdd = {
                 NOMPAYS: AddNomPaysInput.value.toUpperCase() ,
@@ -62,6 +63,8 @@ window.addEventListener('load', () => {
               fetch(urlApiPays, requestOptionsAdd)
                 .then((response) => response.json())
                 .then(function (data) {
+
+                  
                   $('#addModal').modal('hide');
                   msg.style = "font-size:25px"
                   msg.innerHTML =
@@ -174,11 +177,11 @@ window.addEventListener('load', () => {
     msg.style.visibility = "visible";
   
     if (deleteRow) {
-      msg.style = "font-size:40px"
+      msg.style = "font-size:40px";
       msg.innerHTML =
         "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Pays numéro "+row+" supprimé &#128532;</div>";
     } else if (editRow) {
-      msg.style = "font-size:40px"
+      msg.style = "font-size:40px";
       msg.innerHTML =
         "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Pays numéro "+row+" modifié &#129488;</div>";
     }
@@ -201,16 +204,25 @@ window.addEventListener('load', () => {
           /////////// SEARCH //////////////
 
   function searchCountries(code) {
-    const rows = table.getElementsByTagName('tr');
-    for (let i = 0; i < rows.length; i++) { 
-      const row = rows[i];
-      const rowCode = row.cells[0].textContent;
+    if (code) {
+      btnReload.style.visibility = "visible";
+      btnReload.addEventListener("click", () => {
+        location.reload();
+      });
 
-      if (rowCode !== code) {
-        row.style.display = 'none';
-      } else {
-        row.style.display = '';
+      const rows = table.getElementsByTagName("tr");
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const rowCode = row.cells[0].textContent;
+  
+        if (rowCode !== code) {
+          row.style.display = "none";
+        } else {
+          row.style.display = "";
+        }
       }
+    } else {
+      Swal.fire('Hey &#128545; !', "<b>Merci d'entrer un code...</b>", 'error');
     }
   }
 
@@ -223,13 +235,9 @@ window.addEventListener('load', () => {
 
  
 
-  form.addEventListener('submit', (event) => {
-    event.preventDefault(); 
-    btnReload.style.visibility = "visible";
-    btnReload.addEventListener('click' , () => {
-      location.reload();
-    })
-
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+  
     const code = codeInput.value;
     searchCountries(code);
   });

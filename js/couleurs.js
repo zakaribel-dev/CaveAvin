@@ -34,7 +34,7 @@ window.addEventListener('load', () => {
 
                   /////////// ADD //////////////
 
-        document.getElementById('new_country').addEventListener('click', () => {
+        document.getElementById('new_color').addEventListener('click', () => {
           $('.modal-addColor').html("Ajouter une couleur");
 
           $('#addModal').modal('show');
@@ -44,8 +44,7 @@ window.addEventListener('load', () => {
            
 
             if (AddColorInput.value.length === 0 ) {
-              const msgModal = document.getElementById('msgModal');
-              msgModal.innerHTML = "Merci de bien vouloir remplire les champs demandés.";
+              Swal.fire('Hey &#128545; !', '<b>Merci de remplir tous les champs demandés...</b>', 'error');
             } else {
               newDataToAdd = {
                 NOMCOULEUR: AddColorInput.value ,
@@ -200,19 +199,28 @@ window.addEventListener('load', () => {
 
           /////////// SEARCH //////////////
 
-  function searchCountries(code) {
-    const rows = table.getElementsByTagName('tr');
-    for (let i = 0; i < rows.length; i++) { 
-      const row = rows[i];
-      const rowCode = row.cells[0].textContent;
-
-      if (rowCode !== code) {
-        row.style.display = 'none';
-      } else {
-        row.style.display = '';
-      }
-    }
-  }
+          function searchColors(code) {
+            if (code) {
+              btnReload.style.visibility = "visible";
+              btnReload.addEventListener("click", () => {
+                location.reload();
+              });
+          
+              const rows = table.getElementsByTagName("tr");
+              for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const rowCode = row.cells[0].textContent;
+          
+                if (rowCode !== code) {
+                  row.style.display = "none";
+                } else {
+                  row.style.display = "";
+                }
+              }
+            } else {
+              Swal.fire('Hey &#128545; !', "<b>Merci d'entrer un code...</b>", 'error');
+            }
+          }
 
   const form = document.getElementById('form_id');
   const codeInput = document.getElementById('code');
@@ -223,15 +231,11 @@ window.addEventListener('load', () => {
 
  
 
-  form.addEventListener('submit', (event) => {
-    event.preventDefault(); 
-    btnReload.style.visibility = "visible";
-    btnReload.addEventListener('click' , () => {
-      location.reload();
-    })
-
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+  
     const code = codeInput.value;
-    searchCountries(code);
+    searchColors(code);
   });
 
   scrollDownButton.addEventListener('click', function() {
