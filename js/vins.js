@@ -88,33 +88,69 @@ window.addEventListener("load", () => {
   
       /////////// ADD ///////////
   
-      fetch(urlApiVins, requestOptions)
+      fetch(urlApiVins + "?include=COULEUR,REGION,APPELLATION&transform=1", requestOptions)
         .then((response) => response.json())
         .then(function (data) {
-          const code_select_generated = document.createElement("select");
-          code_select_generated.setAttribute("id", "id_select");
-          const combo = document.getElementById("comboRegion");
-  
-          for (let i = 0; i < data.PAYS.records.length; i++) {
-  
-            let code_option_generated = document.createElement("option");
-            code_option_generated.value = data.PAYS.records[i][0];
-            code_option_generated.innerText = data.PAYS.records[i][1];
-            code_select_generated.appendChild(code_option_generated);
+          const code_select_generated_Appellation = document.createElement("select");
+          code_select_generated_Appellation.setAttribute("id", "id_selectAppellation");
+          const code_select_generated_color = document.createElement("select");
+          code_select_generated_color.setAttribute("id", "id_selectColor");
+          const code_select_generated_region = document.createElement("select");
+          code_select_generated_region.setAttribute("id", "id_selectRegion");
+
+          const comboAppellation = document.getElementById("comboVin"); 
+          const comboColor = document.getElementById("comboColor");  
+          const comboRegion = document.getElementById("comboRegion");    
+   
+          for (let i = 0; i < data.VIN.length; i++) {
+            // Combo box des appellations
+            let code_option_generated_Appellation = document.createElement("option");
+            code_option_generated_Appellation.value = data.VIN[i].APPELLATION[0].CODEAPPELLATION;
+            code_option_generated_Appellation.innerText = data.VIN[i].APPELLATION[0].NOMAPPELLATION;
+            code_select_generated_Appellation.appendChild(code_option_generated_Appellation);
+            comboAppellation.appendChild(code_select_generated_Appellation);
+          
+            // Combo box des couleurs
+            let code_option_generated_color = document.createElement("option");
+            code_option_generated_color.value = data.VIN[i].COULEUR[0].CODECOULEUR;
+            code_option_generated_color.innerText = data.VIN[i].COULEUR[0].NOMCOULEUR;
+            code_select_generated_color.appendChild(code_option_generated_color);
+            comboColor.appendChild(code_select_generated_color);
+          
+            // Combo box des régions
+            let code_option_generated_region = document.createElement("option");
+            code_option_generated_region.value = data.VIN[i].REGION[0].CODEREGION;
+            code_option_generated_region.innerText = data.VIN[i].REGION[0].NOMREGION;
+            code_select_generated_region.appendChild(code_option_generated_region);
+            comboRegion.appendChild(code_select_generated_region);
           }
-          combo.appendChild(code_select_generated);
         });
   
-      document.getElementById("new_region").addEventListener("click", () => {
-        $(".modal-addNomPays").html("Ajouter un pays");
-        $(".modal-addNomRegion").html("Ajouter une région");
+
+       
+      document.getElementById("new_wine").addEventListener("click", () => {
+        $(".modal-addNomVin").html("Nom du vin");
+        $(".modal-addNomCouleur").html("Couleur");
+        $(".modal-addNomRegion").html("Région");
+        $(".modal-addNomVin").html("Nom du vin");
+        $(".modal-addCulture").html("Culture");
+        $(".modal-addCommentaire").html("Commentaires");
+
   
         $("#addModal").modal("show");
   
         document.getElementById("saveChangesBtnAdd").addEventListener("click", () => {
-            const AddNomRegionInput =document.getElementById("addNomRegion").value;
-            const select = document.getElementById("id_select").value;
-            if (AddNomRegionInput.length === 0) {
+            const AddNomVin =document.getElementById("nomVin").value;
+            const AddCulture =document.getElementById("culture").value;
+            const AddCommentaire =document.getElementById("commentaire").value;
+
+            const selectAppellation = document.getElementById("id_selectAppellation").value;
+            const selectColor = document.getElementById("id_selectColor").value;
+            const selectRegion = document.getElementById("id_selectRegion").value;
+
+            console.log(selectAppellation);
+
+            if (AddNomVin.length === 0 || AddCulture.length === 0 || AddCommentaire.length === 0) {
               const msgModal = document.getElementById("msgModal");
               msgModal.innerHTML =
                 "Merci de bien vouloir remplire les champs demandés.";
@@ -126,8 +162,12 @@ window.addEventListener("load", () => {
                 },
   
                 body: JSON.stringify({
-                  CODEPAYS: select,
-                  NOMREGION: AddNomRegionInput,
+                  CODEAPPELLATION: selectAppellation,
+                  CODECOULEUR : selectColor,
+                  CODEREGION : selectRegion,
+                  NOM_CUVEE: AddNomVin,
+                  COMMENTAIRES : AddCommentaire,
+                  TYPE_DE_CULTURE : AddCulture
                 }),
               };
   
@@ -135,10 +175,17 @@ window.addEventListener("load", () => {
                 .then((response) => response.json())
                 .then(function (data) {
                   $("#addModal").modal("hide");
+                  msg.style = "font-size:25px"
                   msg.innerHTML =
-                    "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouvelle région ajoutée, elle aura le code : " +
-                    data +
-                    " :) <br> Rafraichissez la page !</div>";
+                  "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouveau vin ajouté, il aura le code : " +
+                  data +
+                  "&#128079; <br> <button id='reloadWine' class='btn-primary'>Rechargez la liste des vins en cliquant ici !</button></div>";  
+        
+                  const btnReloadWines = document.getElementById('reloadWine');
+        
+                  btnReloadWines.addEventListener('click',()=>{
+                    location.reload();
+                  })                    
                 })
                 .catch(function (error) {
                   alert("Ajax error: " + error);
@@ -147,17 +194,17 @@ window.addEventListener("load", () => {
           });
       });
   
-      // DELETE
-  
-  
+
+
+      // DELETE //
+
       function deleteRegion(){
         let btnDelete = document.getElementsByClassName("delete");
       
         for (let i = 0; i < btnDelete.length; i++) {
           btnDelete[i].addEventListener("click", function () {
             let row = this.parentNode.parentNode;
-            let codeRegion = row.childNodes[0].textContent;
-            console.log(codeRegion)
+            let codeVin = row.childNodes[0].textContent;
     
             table.removeChild(row);
     
@@ -168,13 +215,11 @@ window.addEventListener("load", () => {
               },
             };
     
-            fetch(urlApiVins + "/" + codeRegion, requestOptions)
+            fetch(urlApiVins + "/" + codeVin, requestOptions)
               .then((response) => response.json())
               .then(function () {
-                msg.innerHTML =
-                  "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Pays numéro " +
-                  codeRegion +
-                  " supprimé</div>";
+
+                  displayMsg(true,false,codeVin);
               })
               .catch(function (error) {
                 alert("Ajax error: " + error);
@@ -183,68 +228,119 @@ window.addEventListener("load", () => {
         }
       }
       
+
+             // EDIT //
   
       function editRegion(){
   
-        fetch(urlApiVins, requestOptions)
+        fetch(urlApiVins + "?include=COULEUR,REGION,APPELLATION&transform=1", requestOptions)
         .then((response) => response.json())
         .then(function (data) {
-          const code_select_generated = document.createElement("select");
-          code_select_generated.setAttribute("id", "id_selectModif");
-          const combo = document.getElementById("comboModifPays");
-  
-          for (let i = 0; i < data.PAYS.records.length; i++) {
-  
-            let code_option_generated = document.createElement("option");
-            code_option_generated.value = data.PAYS.records[i][0];
-            code_option_generated.innerText = data.PAYS.records[i][1];
-            code_select_generated.appendChild(code_option_generated);
+          const code_select_generated_Appellation = document.createElement("select");
+          code_select_generated_Appellation.setAttribute("id", "id_selectEditAppellation");
+          const code_select_generated_color = document.createElement("select");
+          code_select_generated_color.setAttribute("id", "id_selectEditColor");
+          const code_select_generated_region = document.createElement("select");
+          code_select_generated_region.setAttribute("id", "id_selectEditRegion");
+
+          const comboAppellation = document.getElementById("comboModifAppellation"); 
+          const comboColor = document.getElementById("comboEditColor");  
+          const comboRegion = document.getElementById("comboEditRegion");    
+   
+          for (let i = 0; i < data.VIN.length; i++) {
+
+            // Combbox des appellations
+            let code_option_generated_Appellation = document.createElement("option");
+            code_option_generated_Appellation.value = data.VIN[i].APPELLATION[0].CODEAPPELLATION;
+            code_option_generated_Appellation.innerText = data.VIN[i].APPELLATION[0].NOMAPPELLATION;
+            code_select_generated_Appellation.appendChild(code_option_generated_Appellation);
+            comboAppellation.appendChild(code_select_generated_Appellation);
+          
+            // Combobox des couleurs
+            let code_option_generated_color = document.createElement("option");
+            code_option_generated_color.value = data.VIN[i].COULEUR[0].CODECOULEUR;
+            code_option_generated_color.innerText = data.VIN[i].COULEUR[0].NOMCOULEUR;
+            code_select_generated_color.appendChild(code_option_generated_color);
+            comboColor.appendChild(code_select_generated_color);
+          
+            // Combobox des régions
+            let code_option_generated_region = document.createElement("option");
+            code_option_generated_region.value = data.VIN[i].REGION[0].CODEREGION;
+            code_option_generated_region.innerText = data.VIN[i].REGION[0].NOMREGION;
+            code_select_generated_region.appendChild(code_option_generated_region);
+            comboRegion.appendChild(code_select_generated_region);
           }
-          combo.appendChild(code_select_generated);
         });
-  
-  
+
+       
         let btnModif = document.getElementsByClassName("modif");
         for (let i = 0; i < btnModif.length; i++) {
           btnModif[i].addEventListener("click", function () {
             const row = this.parentNode.parentNode;
-    
-            $(".modal-NomPays").html("Editer Nom du pays");
-            $(".modal-NomRegion").html("Editer Nom de la région");
-  
-    
-            $("#editModal").modal("show");
-    
-            const NomRegionInput = document.getElementById("modifRegion");
-            NomRegionInput.value = row.cells[2].textContent;
-    
             const code = row.cells[0].textContent;
-    
-            document .getElementById("saveChangesBtnModifRegion").addEventListener("click", () => {
-                const select = document.getElementById("id_selectModif").value;
-                const EditNomRegionInput = document.getElementById("modifRegion").value;
+
+            $(".modal-ModifAppellation").html("Modifier l'Appellation");
+            $(".modal-ModifNomCouleur").html("Modifier la Couleur");
+            $(".modal-ModifNomRegion").html("Modifier la Région");
+            $(".modal-ModifNomVin").html("Modifier le Nom du vin");
+            $(".modal-ModifCulture").html("Modifier la Culture");
+            $(".modal-ModifCommentaire").html("Modifier le Commentaire");
   
-                const newData = {
-                  CODEPAYS: select,
-                  NOMREGION : EditNomRegionInput
-                };
+            $("#editModal").modal("show");
+
+      
+            const EditNomVin = document.getElementById("EditNomVin");
+            const EditCulture = document.getElementById("ModifCulture");
+            const EditCommentaire = document.getElementById("ModifCommentaire");
+            EditNomVin.value = row.cells[1].textContent;
+            EditCulture.value = row.cells[5].textContent
+            EditCommentaire.value = row.cells[6].textContent
+
     
-                let requestOptions = {
-                  method: "PUT",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(newData),
-                };
+            document .getElementById("saveChangesBtnModif").addEventListener("click", () => {
+              const EditNomVin =document.getElementById("EditNomVin").value;
+              const EditCulture =document.getElementById("ModifCulture").value;
+              const EditCommentaire =document.getElementById("ModifCommentaire").value;
+  
+              const selectAppellation = document.getElementById("id_selectEditAppellation").value;
+              const selectColor = document.getElementById("id_selectEditColor").value;
+              const selectRegion = document.getElementById("id_selectEditRegion").value;
+  
+                
+              let requestOptionsEdit = {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded",
+                },
+  
+                body: JSON.stringify({
+                  CODEAPPELLATION: selectAppellation,
+                  CODECOULEUR : selectColor,
+                  CODEREGION : selectRegion,
+                  NOM_CUVEE: EditNomVin,
+                  COMMENTAIRES : EditCommentaire,
+                  TYPE_DE_CULTURE : EditCulture
+                }),
+              };
     
-                fetch(urlApiVins + "/" + code, requestOptions)
+           
+                fetch(urlApiVins + "/" + code, requestOptionsEdit)
                   .then((response) => response.json())
                   .then(function () {
                     msg.innerHTML =
-                      "<div class='alert alert-primary' role='alert' style=font-weight:bolder;>Pays " +
+                      "<div class='alert alert-primary' role='alert' style=font-weight:bolder;>Vin " +
                       code +
                       " modifié.</div>";
-                    row.cells[2].textContent = NomRegionInput.value;
+
+                      const EditNomVin = document.getElementById("EditNomVin");
+                      const EditCulture = document.getElementById("ModifCulture");
+                      const EditCommentaire = document.getElementById("ModifCommentaire");
+                      row.cells[1].textContent = EditNomVin.value;
+                      row.cells[5].textContent = EditCulture.value;
+                      row.cells[6].textContent = EditCommentaire.value;
+
+                      displayMsg(false,true,code)
+
                     $("#editModal").modal("hide");
                   })
                   .catch(function (error) {
@@ -254,23 +350,55 @@ window.addEventListener("load", () => {
           });
         }
       }
+
+      function displayMsg(deleteRow, editRow, row) {
+        msg.style.visibility = "visible";
+      
+        if (deleteRow) {
+          msg.style = "font-size:40px"
+          msg.innerHTML =
+            "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Vin numéro "+row+" supprimé &#128532;</div>";
+        } else if (editRow) {
+          msg.style = "font-size:40px"
+          msg.innerHTML =
+            "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Vin numéro "+row+" modifié &#129488;</div>";
+        }
+      
+
+
+
+        setTimeout(function () {
+          msg.classList.add("fade-out");
+        }, 1000);
+      
+        setTimeout(function () {
+          msg.style.visibility = "hidden";
+          msg.classList.remove("fade-out");
+        }, 2400);
+      }
+      
   
       function viewRegion() {
         let btnVue = document.getElementsByClassName('view');
         for (let i = 0; i < btnVue.length; i++) {
           btnVue[i].addEventListener('click', function () {
             let row = this.parentNode.parentNode;
-            let codeRegion = row.cells[0].textContent;
-            let nomPays = row.cells[1].textContent;
-            let nomRegion = row.cells[2].textContent;
-            
-            // Sélectionner les éléments de la modal "View"
+
+            let codeVin = row.cells[0].textContent;
+            let nomRegion = row.cells[3].textContent;
+            let nomVin = row.cells[1].textContent;
+            let Appellation = row.cells[2].textContent;
+            let Couleur = row.cells[4].textContent;
+            let Culture = row.cells[5].textContent;
+            let Commentaires = row.cells[6].textContent;
+   
             let modalTitle = document.querySelector('#viewModal .modal-title');
             
-            // Mettre à jour le contenu de la modal avec les informations du pays
-            modalTitle.innerHTML = "Code de la région : " + codeRegion + "<br>Pays : " + nomPays + "<br>Région : " + nomRegion;
-            
-            // Afficher la modal "View"
+            modalTitle.innerHTML = 
+            "Code vin : " + codeVin + "<br><br>Nom du vin : " + nomVin + "<br><br>Appellation : " 
+            + Appellation + "<br><br>Région : " + nomRegion + "<br><br>Couleur : " + Couleur + "<br><br>Culture : " + Culture + 
+            "<br><br>Commentaires : " + Commentaires;
+          
             $('#viewModal').modal('show');
           });
         }
@@ -295,6 +423,8 @@ window.addEventListener("load", () => {
     const form = document.getElementById("form_id");
     const codeInput = document.getElementById("code");
     const btnReload = document.getElementById("reload");
+    const scrollDownButton = document.getElementById('scrollButton');
+    const scrollTopButton = document.getElementById('scrollTopButton');
     btnReload.style.visibility = "hidden";
   
     form.addEventListener("submit", (event) => {
@@ -305,6 +435,15 @@ window.addEventListener("load", () => {
       });
       const code = codeInput.value;
       searchRegions(code);
+    });
+
+    scrollDownButton.addEventListener('click', function() {
+      const bottomElement = document.documentElement;
+      bottomElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    });
+ 
+    scrollTopButton.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   
     getRegions(urlApiVins)

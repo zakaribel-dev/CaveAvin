@@ -3,16 +3,16 @@ window.addEventListener('load', () => {
   table.className = "table table-dark table-hover container mt-5 text-center";
   const msg = document.getElementById('msg');
 
-  function getCountries(urlApiPays) {
+  function getCountries(urlApiCouleur) {
     let requestOptions = {
       method: "GET",
       redirect: "follow",
     };
 
-    fetch(urlApiPays, requestOptions)
+    fetch(urlApiCouleur, requestOptions)
       .then((response) => response.json())
       .then(function (data) {
-        data.PAYS.records.forEach(function (record) {
+        data.COULEUR.records.forEach(function (record) {
           let tr = document.createElement("tr");
 
           let actionsTd = document.createElement("td");
@@ -35,20 +35,20 @@ window.addEventListener('load', () => {
                   /////////// ADD //////////////
 
         document.getElementById('new_country').addEventListener('click', () => {
-          $('.modal-addNomPays').html("Ajouter un pays");
+          $('.modal-addColor').html("Ajouter une couleur");
 
           $('#addModal').modal('show');
 
           document.getElementById('saveChangesBtnAdd').addEventListener('click', () => {
-            const AddNomPaysInput = document.getElementById('addNomPays');
+            const AddColorInput = document.getElementById('addColor');
            
 
-            if (AddNomPaysInput.value.length === 0 ) {
+            if (AddColorInput.value.length === 0 ) {
               const msgModal = document.getElementById('msgModal');
               msgModal.innerHTML = "Merci de bien vouloir remplire les champs demandés.";
             } else {
               newDataToAdd = {
-                NOMPAYS: AddNomPaysInput.value.toUpperCase() ,
+                NOMCOULEUR: AddColorInput.value ,
               };
 
               let requestOptionsAdd = {
@@ -59,17 +59,17 @@ window.addEventListener('load', () => {
                 body: JSON.stringify(newDataToAdd)
               };
 
-              fetch(urlApiPays, requestOptionsAdd)
+              fetch(urlApiCouleur, requestOptionsAdd)
                 .then((response) => response.json())
                 .then(function (data) {
                   $('#addModal').modal('hide');
                   msg.style = "font-size:25px"
                   msg.innerHTML =
-                  "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouveau pays ajouté, il aura le code : " +
+                  "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouvelle couleur ajoutée, elle aura le code : " +
                   data +
-                  "&#128079; <br> <button id='reloadWine' class='btn-primary'>Rechargez la liste des vins en cliquant ici !</button></div>";  
+                  "&#128079; <br> <button id='reloadColor' class='btn-primary'>Rechargez la liste des couelurs en cliquant ici !</button></div>";  
         
-                  const btnReloadWines = document.getElementById('reloadWine');
+                  const btnReloadWines = document.getElementById('reloadColor');
         
                   btnReloadWines.addEventListener('click',()=>{
                     location.reload();
@@ -98,7 +98,7 @@ window.addEventListener('load', () => {
               }
             };
 
-            fetch(urlApiPays + "/" + codePays, requestOptions)
+            fetch(urlApiCouleur + "/" + codePays, requestOptions)
               .then((response) => response.json())
               .then(function () {
                 displayMsg(true,false,codePays)
@@ -115,13 +115,13 @@ window.addEventListener('load', () => {
           btnModif[i].addEventListener('click', function () {
             const row = this.parentNode.parentNode;
 
-            $('.modal-NomPays').html("Editer Nom du pays");
+            $('.modal-CouleurEdit').html("Editer Couleur");
 
             $('#editModal').modal('show');
 
-            const NomPaysInput = document.getElementById('editNomPays');
+            const ColorInput = document.getElementById('editCouleur');
      
-            NomPaysInput.value = row.cells[1].textContent;
+            ColorInput.value = row.cells[1].textContent;
           
 
             const code = row.cells[0].textContent;
@@ -129,7 +129,7 @@ window.addEventListener('load', () => {
             document.getElementById('saveChangesBtn').addEventListener('click', () => {
 
               const newData = {
-                NOMPAYS: NomPaysInput.value.toUpperCase(),
+                NOMCOULEUR: ColorInput.value,
               };
 
               let requestOptions = {
@@ -140,11 +140,11 @@ window.addEventListener('load', () => {
                 body: JSON.stringify(newData)
               };
 
-              fetch(urlApiPays + "/" + code, requestOptions)
+              fetch(urlApiCouleur + "/" + code, requestOptions)
                 .then((response) => response.json())
                 .then(function () {
                  displayMsg(false,true,code)
-                  row.cells[1].textContent = NomPaysInput.value.toUpperCase();
+                  row.cells[1].textContent =  ColorInput.value.toUpperCase();
                   $('#editModal').modal('hide');
                 })
                 .catch(function (error) {
@@ -159,8 +159,8 @@ window.addEventListener('load', () => {
           btnVue[i].addEventListener('click', function () {
             let row = this.parentNode.parentNode;
             $('#viewModal').modal('show');
-            $('.modal-title').html("Code du pays : " + row.cells[0].textContent +
-              "<br>Nom du pays : " + row.cells[1].textContent);
+            $('.modal-title').html("Code couleur : " + row.cells[0].textContent +
+              "<br>Couleur : " + row.cells[1].textContent);
           });
         }
       })
@@ -176,11 +176,11 @@ window.addEventListener('load', () => {
     if (deleteRow) {
       msg.style = "font-size:40px"
       msg.innerHTML =
-        "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Pays numéro "+row+" supprimé &#128532;</div>";
+        "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Couleur numéro "+row+" supprimée &#128532;</div>";
     } else if (editRow) {
       msg.style = "font-size:40px"
       msg.innerHTML =
-        "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Pays numéro "+row+" modifié &#129488;</div>";
+        "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Couleur numéro "+row+" modifiée &#129488;</div>";
     }
 
 
@@ -241,7 +241,7 @@ window.addEventListener('load', () => {
 
   scrollTopButton.addEventListener('click', function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-  
-  getCountries(urlApiPays);
+  }); 
+
+  getCountries(urlApiCouleur);
 });

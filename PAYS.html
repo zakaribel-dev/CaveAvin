@@ -45,7 +45,15 @@ a {
   color: #a17a53;
 }
 
+#scrollButton {
+	margin-left: 35%;
+	font-weight: bolder;
+}
 
+#scrollTopButton{
+	margin-left: 46%;
+	font-weight: bolder;
+}
 
 </style>
 </head>
@@ -67,9 +75,9 @@ a {
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="PAYS.html">PAYS</a>
-				<a class="dropdown-item" href="REGION.html">REGIONS</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
+				<a class="dropdown-item" href="REGIONS.html">REGIONS</a>
+				<a class="dropdown-item" href="APPELLATIONS.html">APPELLATIONS</a>				
+				<a class="dropdown-item" href="COULEURS.html">COULEURS</a>				
               </div>
             </li>
           </ul>
@@ -88,6 +96,7 @@ a {
  <!-- AJOUT -->
 
 <button id="new_country" class="btn-danger">+ Nouveau</button>
+<button id="scrollButton" class="btn btn-warning">Descendre tout en bas</button>
 
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -123,6 +132,9 @@ a {
         </tr>
       </table>
     </div>
+
+	<button id="scrollTopButton" class="btn btn-warning">Remonter tout en haut</button>
+
 
        <!-- modal modif-->
 	<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -171,7 +183,7 @@ a {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <script src="js/init_pays.js"></script>
+    <script src="js/init_api.js"></script>
     <script src="js/pays.js"></script>
 </body>
 </html>

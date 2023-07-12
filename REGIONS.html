@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Gestion pays</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+		integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+	<style>
+		#msg {
+			position: fixed;
+			top: 6%;
+			left: 5%;
+			width: 100%;
+			text-align: center;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+		}
+
+		#msgModalAdd,
+		#msgmodalEdit {
+			color: red;
+			text-align: center;
+		}
+
+		body {
+			background-color: #331a00;
+			padding-top: 70px;
+		}
+
+		table {
+			border: 3px solid rgb(129, 82, 82) !important;
+		}
+
+
+		h1,
+		h2,
+		h3 {
+			color: rgb(153, 57, 57)
+		}
+
+		p {
+			color: #d9d9d9;
+		}
+
+		a {
+			color: #a17a53;
+		}
+		#scrollButton {
+		margin-left: 35%;
+		font-weight: bolder;
+		}
+
+		#scrollTopButton {
+		margin-left: 46%;
+		font-weight: bolder;
+	   }
+	</style>
+</head>
+
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+		<a class="navbar-brand" href="index.html">Cave à vin</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
+			aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+			<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+				<li class="nav-item">
+					<a class="nav-link" href="VINS.html">Gestion des vins</a>
+				</li>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Autres gestionnaires
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="PAYS.html">PAYS</a>
+						<a class="dropdown-item" href="REGIONS.html">REGIONS</a>
+						<a class="dropdown-item" href="APPELLATIONS.html">APPELLATIONS</a>				
+						<a class="dropdown-item" href="COULEURS.html">COULEURS</a>				
+
+					</div>
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div class="container">
+		<h1>Voici la liste des régions</h1>
+
+		<form id="form_id">
+			<input type="text" id="code" class="border border-dark" placeholder="Saisir un code pays">
+			<button type="submit" class="fas fa-search"></button>
+			<button id="reload">réafficher la liste des régions</button>
+		</form>
+		<br>
+
+		<!-- AJOUT -->
+
+		<button id="new_region" class="btn-danger">+ Nouveau</button>
+		<button id="scrollButton" class="btn btn-warning">Descendre tout en bas</button>
+
+		<div class="modal fade" id="addModal" aria-labelledby="ModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+
+				<div class="modal-content">
+					<div id="msgModalAdd"></div>
+					<div class="modal-body">
+
+						<h5 class="modal-addNomPays"></h5>
+					</div>
+					<div class="modal-body">
+						<form>
+							<div class="form-group">
+								<div id="comboRegion"></div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-body">
+
+						<h5 class="modal-addNomRegion"></h5>
+					</div>
+					<div class="modal-body">
+						<form>
+							<div class="form-group">
+								<input type="text" class="form-control border border-dark" id="addNomRegion">
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+						<button type="button" class="btn btn-success" id="saveChangesBtnAdd">Enregistrer</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="msg"></div>
+
+		<table id="table_id">
+			<thead>
+				<th>Code Région</th>
+				<th>Nom du pays</th>
+				<th>Nom Région</th>
+				<th>Actions</th>
+			</thead>
+		</table>
+	</div>
+	<button id="scrollTopButton" class="btn btn-warning">Remonter tout en haut</button>
+
+			<!-- modal vue-->
+
+		<div class="modal fade" id="viewModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">TEST TEST</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+
+					<div class="modal-footer">
+
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- modif -->
+		
+	<div class="modal fade" id="editModal" aria-labelledby="editModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+
+				<h5 class="modal-NomPays"></h5>
+					<form>
+						<div class="form-group">
+						<div id="comboModifPays"> </div>
+						</div>
+					</form>
+				</div>
+
+					<div class="modal-body">
+						<h5 class="modal-NomRegion"></h5>
+						<form>
+							<div class="form-group">
+
+								<input type="text" id="modifRegion">
+
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<div id="msgModalEdit"></div>
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-success" id="saveChangesBtnModifRegion">Save
+							changes</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+		<script src="js/init_api.js"></script>
+		<script src="js/regions.js"></script>
+</body>
+
+</html>

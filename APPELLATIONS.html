@@ -50,6 +50,16 @@
 		a {
 			color: #a17a53;
 		}
+
+		#scrollButton {
+		margin-left: 35%;
+		font-weight: bolder;
+		}
+
+		#scrollTopButton{
+			margin-left: 46%;
+			font-weight: bolder;
+		}
 	</style>
 </head>
 
@@ -73,27 +83,28 @@
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 						<a class="dropdown-item" href="PAYS.html">PAYS</a>
-						<a class="dropdown-item" href="REGION.html">REGIONS</a>
-						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="#">Something else here</a>
+						<a class="dropdown-item" href="REGIONS.html">REGIONS</a>
+						<a class="dropdown-item" href="APPELLATIONS.html">APPELLATIONS</a>				
+		        		<a class="dropdown-item" href="COULEURS.html">COULEURS</a>				
 					</div>
 				</li>
 			</ul>
 		</div>
 	</nav>
 	<div class="container">
-		<h1>Voici la liste des régions</h1>
+		<h1>Voici la liste des appellations</h1>
 
 		<form id="form_id">
-			<input type="text" id="code" class="border border-dark" placeholder="Saisir un code pays">
+			<input type="text" id="code" class="border border-dark" placeholder="Saisir un code appellation">
 			<button type="submit" class="fas fa-search"></button>
-			<button id="reload">réafficher la liste des régions</button>
+			<button id="reload">réafficher la liste des appellations</button>
 		</form>
 		<br>
 
 		<!-- AJOUT -->
 
-		<button id="new_region" class="btn-danger">+ Nouveau</button>
+		<button id="new_appellation" class="btn-danger">+ Nouveau</button>
+		<button id="scrollButton" class="btn btn-warning">Descendre tout en bas</button>
 
 		<div class="modal fade" id="addModal" aria-labelledby="ModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -102,25 +113,9 @@
 					<div id="msgModalAdd"></div>
 					<div class="modal-body">
 
-						<h5 class="modal-addNomPays"></h5>
-					</div>
-					<div class="modal-body">
-						<form>
-							<div class="form-group">
-								<div id="comboRegion"></div>
-							</div>
-						</form>
-					</div>
-					<div class="modal-body">
+						<h5 class="modal-addAppellation"></h5><br>
+						<input type="text" id="addAppellation">
 
-						<h5 class="modal-addNomRegion"></h5>
-					</div>
-					<div class="modal-body">
-						<form>
-							<div class="form-group">
-								<input type="text" class="form-control border border-dark" id="addNomRegion">
-							</div>
-						</form>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
@@ -134,19 +129,21 @@
 
 		<table id="table_id">
 			<thead>
-				<th>Code Région</th>
-				<th>Nom du pays</th>
-				<th>Nom Région</th>
+				<th>Code Appellation</th>
+				<th>Appellation</th>
 				<th>Actions</th>
 			</thead>
 		</table>
 	</div>
+	<button id="scrollTopButton" class="btn btn-warning">Remonter tout en haut</button>
+
+			<!-- modal vue-->
 
 		<div class="modal fade" id="viewModal">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">TEST TEST</h5>
+						<h5 class="modal-title"></h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -159,56 +156,36 @@
 				</div>
 			</div>
 		</div>
+		
+		<!-- modif -->
 	<div class="modal fade" id="editModal" aria-labelledby="editModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<h5 class="modal-Pays"></h5>
 				<div class="modal-body">
-
-					<h5 class="modal-NomPays"></h5>
-
-				</div>
-				<div class="modal-body">
+					<h5 class="modal-AppellationModif"></h5>
 					<form>
 						<div class="form-group">
-
-							<div id="comboModifPays"> </div>
-
+							<input type="text" id="editAppellation">
 						</div>
 					</form>
-					<div class="modal-body">
-
-						<h5 class="modal-NomRegion"></h5>
-
-					</div>
-					<div class="modal-body">
-						<form>
-							<div class="form-group">
-
-								<input type="text" id="modifRegion">
-
-							</div>
-						</form>
-					</div>
+					
 					<div class="modal-footer">
 						<div id="msgModalEdit"></div>
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-success" id="saveChangesBtnModifRegion">Save
-							changes</button>
+						<button type="button" class="btn btn-success" id="saveChangesBtnModifAppellation">Save changes</button>
 					</div>
 				</div>
 			</div>
 		</div>
 
 
-		<!-- modal vue-->
+
 
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-		<script src="js/init_region.js"></script>
-		<script src="js/init_pays.js"></script>
-		<script src="js/region.js"></script>
+		<script src="js/init_api.js"></script>
+		<script src="js/appellation.js"></script>
 </body>
 
 </html>

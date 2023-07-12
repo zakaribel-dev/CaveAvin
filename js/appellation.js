@@ -3,16 +3,16 @@ window.addEventListener('load', () => {
   table.className = "table table-dark table-hover container mt-5 text-center";
   const msg = document.getElementById('msg');
 
-  function getCountries(urlApiPays) {
+  function getCountries(urlApiAppellation) {
     let requestOptions = {
       method: "GET",
       redirect: "follow",
     };
 
-    fetch(urlApiPays, requestOptions)
+    fetch(urlApiAppellation, requestOptions)
       .then((response) => response.json())
       .then(function (data) {
-        data.PAYS.records.forEach(function (record) {
+        data.APPELLATION.records.forEach(function (record) {
           let tr = document.createElement("tr");
 
           let actionsTd = document.createElement("td");
@@ -34,21 +34,21 @@ window.addEventListener('load', () => {
 
                   /////////// ADD //////////////
 
-        document.getElementById('new_country').addEventListener('click', () => {
-          $('.modal-addNomPays').html("Ajouter un pays");
+        document.getElementById('new_appellation').addEventListener('click', () => {
+          $('.modal-addAppellation').html("Ajouter une appellation");
 
           $('#addModal').modal('show');
 
           document.getElementById('saveChangesBtnAdd').addEventListener('click', () => {
-            const AddNomPaysInput = document.getElementById('addNomPays');
+            const AddAppellationInput = document.getElementById('addAppellation');
            
 
-            if (AddNomPaysInput.value.length === 0 ) {
+            if (AddAppellationInput.value.length === 0 ) {
               const msgModal = document.getElementById('msgModal');
               msgModal.innerHTML = "Merci de bien vouloir remplire les champs demandés.";
             } else {
               newDataToAdd = {
-                NOMPAYS: AddNomPaysInput.value.toUpperCase() ,
+                NOMAPPELLATION: AddAppellationInput.value
               };
 
               let requestOptionsAdd = {
@@ -59,21 +59,21 @@ window.addEventListener('load', () => {
                 body: JSON.stringify(newDataToAdd)
               };
 
-              fetch(urlApiPays, requestOptionsAdd)
+              fetch(urlApiAppellation, requestOptionsAdd)
                 .then((response) => response.json())
                 .then(function (data) {
                   $('#addModal').modal('hide');
                   msg.style = "font-size:25px"
                   msg.innerHTML =
-                  "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouveau pays ajouté, il aura le code : " +
+                  "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouvelle appellation ajoutée, elle aura le code : " +
                   data +
-                  "&#128079; <br> <button id='reloadWine' class='btn-primary'>Rechargez la liste des vins en cliquant ici !</button></div>";  
+                  "&#128079; <br> <button id='reloadAppellation' class='btn-primary'>Rechargez la liste des appellations en cliquant ici !</button></div>";  
         
-                  const btnReloadWines = document.getElementById('reloadWine');
+                  const btnReloadWines = document.getElementById('reloadAppellation');
         
                   btnReloadWines.addEventListener('click',()=>{
                     location.reload();
-                  });     
+                  });                                    
                 })
                 .catch(function (error) {
                   alert("Ajax error: " + error);
@@ -87,7 +87,7 @@ window.addEventListener('load', () => {
         for (let i = 0; i < btnDelete.length; i++) {
           btnDelete[i].addEventListener('click', function () {
             let row = this.parentNode.parentNode;
-            let codePays = row.childNodes[0].textContent;
+            let codeAppellation = row.childNodes[0].textContent;
 
             table.removeChild(row);
 
@@ -98,10 +98,10 @@ window.addEventListener('load', () => {
               }
             };
 
-            fetch(urlApiPays + "/" + codePays, requestOptions)
+            fetch(urlApiAppellation + "/" + codeAppellation, requestOptions)
               .then((response) => response.json())
               .then(function () {
-                displayMsg(true,false,codePays)
+                displayMsg(true,false,codeAppellation)
               })
               .catch(function (error) {
                 alert("Ajax error: " + error);
@@ -115,21 +115,21 @@ window.addEventListener('load', () => {
           btnModif[i].addEventListener('click', function () {
             const row = this.parentNode.parentNode;
 
-            $('.modal-NomPays').html("Editer Nom du pays");
+            $('.modal-AppellationModif').html("Editer Appellation");
 
             $('#editModal').modal('show');
 
-            const NomPaysInput = document.getElementById('editNomPays');
+            const NomAppellationInput = document.getElementById('editAppellation');
      
-            NomPaysInput.value = row.cells[1].textContent;
+            NomAppellationInput.value = row.cells[1].textContent;
           
 
             const code = row.cells[0].textContent;
 
-            document.getElementById('saveChangesBtn').addEventListener('click', () => {
+            document.getElementById('saveChangesBtnModifAppellation').addEventListener('click', () => {
 
               const newData = {
-                NOMPAYS: NomPaysInput.value.toUpperCase(),
+                NOMAPPELLATION: NomAppellationInput.value
               };
 
               let requestOptions = {
@@ -140,12 +140,13 @@ window.addEventListener('load', () => {
                 body: JSON.stringify(newData)
               };
 
-              fetch(urlApiPays + "/" + code, requestOptions)
+              fetch(urlApiAppellation + "/" + code, requestOptions)
                 .then((response) => response.json())
                 .then(function () {
                  displayMsg(false,true,code)
-                  row.cells[1].textContent = NomPaysInput.value.toUpperCase();
-                  $('#editModal').modal('hide');
+                  row.cells[1].textContent =NomAppellationInput.value;
+                    $('#editModal').modal('hide');
+                    displayMsg(false,true,code)
                 })
                 .catch(function (error) {
                   alert("Ajax error: " + error);
@@ -159,8 +160,8 @@ window.addEventListener('load', () => {
           btnVue[i].addEventListener('click', function () {
             let row = this.parentNode.parentNode;
             $('#viewModal').modal('show');
-            $('.modal-title').html("Code du pays : " + row.cells[0].textContent +
-              "<br>Nom du pays : " + row.cells[1].textContent);
+            $('.modal-title').html("Code de l'appellation : " + row.cells[0].textContent +
+              "<br>Appellation : " + row.cells[1].textContent);
           });
         }
       })
@@ -176,11 +177,11 @@ window.addEventListener('load', () => {
     if (deleteRow) {
       msg.style = "font-size:40px"
       msg.innerHTML =
-        "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Pays numéro "+row+" supprimé &#128532;</div>";
+        "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Appellation numéro "+row+" supprimée &#128532;</div>";
     } else if (editRow) {
       msg.style = "font-size:40px"
       msg.innerHTML =
-        "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Pays numéro "+row+" modifié &#129488;</div>";
+        "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Appellation numéro "+row+" modifiée &#129488;</div>";
     }
 
 
@@ -191,7 +192,7 @@ window.addEventListener('load', () => {
     setTimeout(function () {
       msg.style.visibility = "hidden";
       msg.classList.remove("fade-out");
-    }, 3000);
+    }, 2400);
   }
 
 
@@ -242,6 +243,6 @@ window.addEventListener('load', () => {
   scrollTopButton.addEventListener('click', function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
-  
-  getCountries(urlApiPays);
+
+  getCountries(urlApiAppellation);
 });

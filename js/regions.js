@@ -105,10 +105,17 @@ window.addEventListener("load", () => {
               .then((response) => response.json())
               .then(function (data) {
                 $("#addModal").modal("hide");
+                msg.style = "font-size:25px"
                 msg.innerHTML =
-                  "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouvelle région ajoutée, elle aura le code : " +
-                  data +
-                  " :) <br> Rafraichissez la page !</div>";
+                "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouvelle région ajoutée, elle aura le code : " +
+                data +
+                "&#128079; <br> <button id='reloadWine' class='btn-primary'>Rechargez la liste des région en cliquant ici !</button></div>";  
+      
+                const btnReloadWines = document.getElementById('reloadWine');
+      
+                btnReloadWines.addEventListener('click',()=>{
+                  location.reload();
+                });     
               })
               .catch(function (error) {
                 alert("Ajax error: " + error);
@@ -117,8 +124,8 @@ window.addEventListener("load", () => {
         });
     });
 
-    // DELETE
 
+    // DELETE
 
     function deleteRegion(){
       let btnDelete = document.getElementsByClassName("delete");
@@ -141,10 +148,7 @@ window.addEventListener("load", () => {
           fetch(urlApiRegion + "/" + codeRegion, requestOptions)
             .then((response) => response.json())
             .then(function () {
-              msg.innerHTML =
-                "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Pays numéro " +
-                codeRegion +
-                " supprimé</div>";
+              displayMsg(true,false,codeRegion)
             })
             .catch(function (error) {
               alert("Ajax error: " + error);
@@ -210,10 +214,7 @@ window.addEventListener("load", () => {
               fetch(urlApiRegion + "/" + code, requestOptions)
                 .then((response) => response.json())
                 .then(function () {
-                  msg.innerHTML =
-                    "<div class='alert alert-primary' role='alert' style=font-weight:bolder;>Pays " +
-                    code +
-                    " modifié.</div>";
+                  displayMsg(false,true,code)
                   row.cells[2].textContent = NomRegionInput.value;
                   $("#editModal").modal("hide");
                 })
@@ -248,6 +249,32 @@ window.addEventListener("load", () => {
 
 }
 
+
+function displayMsg(deleteRow, editRow, row) {
+  msg.style.visibility = "visible";
+
+  if (deleteRow) {
+    msg.style = "font-size:40px"
+    msg.innerHTML =
+      "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Région numéro "+row+" supprimée &#128532;</div>";
+  } else if (editRow) {
+    msg.style = "font-size:40px"
+    msg.innerHTML =
+      "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Région numéro "+row+" modifiée &#129488;</div>";
+  }
+
+
+  setTimeout(function () {
+    msg.classList.add("fade-out");
+  }, 1000);
+
+  setTimeout(function () {
+    msg.style.visibility = "hidden";
+    msg.classList.remove("fade-out");
+  }, 2400);
+}
+
+
   function searchRegions(code) {
     const rows = table.getElementsByTagName("tr");
     for (let i = 0; i < rows.length; i++) {
@@ -265,6 +292,8 @@ window.addEventListener("load", () => {
   const form = document.getElementById("form_id");
   const codeInput = document.getElementById("code");
   const btnReload = document.getElementById("reload");
+  const scrollDownButton = document.getElementById('scrollButton');
+  const scrollTopButton = document.getElementById('scrollTopButton');
   btnReload.style.visibility = "hidden";
 
   form.addEventListener("submit", (event) => {
@@ -276,6 +305,15 @@ window.addEventListener("load", () => {
     const code = codeInput.value;
     searchRegions(code);
   });
+  
+  scrollDownButton.addEventListener('click', function() {
+    const bottomElement = document.documentElement;
+    bottomElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  });
+
+  scrollTopButton.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }); 
 
   getRegions(urlApiRegion);
 });

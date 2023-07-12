@@ -32,6 +32,7 @@ table{
 	border: 3px solid rgb(129, 82, 82) !important;
 }
 
+
 h1, h2, h3 {
 	color: rgb(153, 57, 57)
 }
@@ -77,27 +78,25 @@ a {
 				<a class="dropdown-item" href="REGIONS.html">REGIONS</a>
 				<a class="dropdown-item" href="APPELLATIONS.html">APPELLATIONS</a>				
 				<a class="dropdown-item" href="COULEURS.html">COULEURS</a>				
-
               </div>
             </li>
           </ul>
         </div>
       </nav>
 <div class="container">
-<h1>Voici la liste des vins</h1>
+<h1>Voici la liste des couleurs</h1>
 
 <form id="form_id">
-<input type="text" id="code" class="border border-dark" placeholder="Saisir un code vin">
+<input type="text" id="code" class="border border-dark" placeholder="Saisir un code couleur">
 <button type="submit" class="fas fa-search"></button> 
-<button id="reload">réafficher la liste vins</button>
+<button id="reload">réafficher la liste des couleurs</button>
 </form>
 <br>
 
  <!-- AJOUT -->
 
-<button id="new_wine" class="btn-danger">+ Nouveau</button>
+<button id="new_country" class="btn-danger">+ Nouveau</button>
 <button id="scrollButton" class="btn btn-warning">Descendre tout en bas</button>
-
 
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -105,59 +104,16 @@ a {
 	  <div class="modal-content">
 		<div id="msgModal"></div>
 		<div class="modal-body">
-			<h5 class="modal-addNomVin" ></h5>
+
+			<h5 class="modal-addColor" ></h5>
+		</div>
+		<div class="modal-body">
 		  <form>
 			<div class="form-group">
-			  <div id="comboVin"></div>
+			  <input type="text" class="form-control border border-dark" id="addColor">
 			</div>
 		  </form>
 		</div>
-
-		<div class="modal-body">
-			<h5 class="modal-addNomCouleur" ></h5>
-		  <form>
-			<div class="form-group">
-			  <div id="comboColor"></div>
-			</div>
-		  </form>
-		</div>
-
-
-		<div class="modal-body">
-			<h5 class="modal-addNomRegion" ></h5>
-		  <form>
-			<div class="form-group">
-			  <div id="comboRegion"></div>
-			</div>
-		  </form>
-		</div>
-
-		<div class="modal-body">
-			<h5 class="modal-addNomVin" ></h5>
-			<div class="form-group">
-				<input type="text" id="nomVin">
-			</div>
-		  </form>
-		</div>
-
-		<div class="modal-body">
-			<h5 class="modal-addCulture" ></h5>
-		  <form>
-			<div class="form-group">
-				<input type="text" id="culture">
-			</div>
-		  </form>
-		</div>
-
-		<div class="modal-body">
-			<h5 class="modal-addCommentaire" ></h5>
-		  <form>
-			<div class="form-group">
-				<input type="text" id="commentaire">
-			</div>
-		  </form>
-		</div>
-		
 		<div class="modal-footer">
 		  <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
 		  <button type="button" class="btn btn-success" id="saveChangesBtnAdd">Enregistrer</button>
@@ -170,113 +126,60 @@ a {
 
     <table id="table_id">
         <tr>
-		  <th>Code Vin</th>
-		  <th>Nom du Vin</th>
-		  <th>Appellation</th>
-          <th>Région</th>
+		  <th>Code de la couleur</th>
 		  <th>Couleur</th>
-		  <th>Culture</th>
-          <th>Commentaires</th>
-          <th>Actions</th>
+		  <th>Actions</th>
         </tr>
       </table>
     </div>
-
 	<button id="scrollTopButton" class="btn btn-warning">Remonter tout en haut</button>
 
-	<div class="modal fade" id="viewModal">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title"></h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-
-				<div class="modal-footer">
-
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-				</div>
-			</div>
-		</div>
-	</div> 
        <!-- modal modif-->
 	<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
-			<div class="modal-dialog">
-
-				<div class="modal-content">
-				  <div id="msgModal"></div>
-				  <div class="modal-body">
-					  <h5 class="modal-ModifAppellation" ></h5>
-					<form>
-					  <div class="form-group">
-						<div id="comboModifAppellation"></div>
-					  </div>
-					</form>
-				  </div>
-		  
-				  <div class="modal-body">
-					  <h5 class="modal-ModifNomCouleur" ></h5>
-					<form>
-					  <div class="form-group">
-						<div id="comboEditColor"></div>
-					  </div>
-					</form>
-				  </div>
-		  
-		  
-				  <div class="modal-body">
-					  <h5 class="modal-ModifNomRegion" ></h5>
-					<form>
-					  <div class="form-group">
-						<div id="comboEditRegion"></div>
-					  </div>
-					</form>
-				  </div>
-		  
-				  <div class="modal-body">
-					  <h5 class="modal-ModifNomVin" ></h5>
-					  <div class="form-group">
-						  <input type="text" id="EditNomVin">
-					  </div>
-					</form>
-				  </div>
-		  
-				  <div class="modal-body">
-					  <h5 class="modal-ModifCulture" ></h5>
-					<form>
-					  <div class="form-group">
-						  <input type="text" id="ModifCulture">
-					  </div>
-					</form>
-				  </div>
-		  
-				  <div class="modal-body">
-					  <h5 class="modal-ModifCommentaire" ></h5>
-					<form>
-					  <div class="form-group">
-						  <input type="text" id="ModifCommentaire">
-					  </div>
-					</form>
-				  </div>
+		  <div class="modal-content">
+			<div class="modal-body">
+				<h5 class="modal-CouleurEdit" ></h5>
+			  <form>
+				<div class="form-group">
+				  <input type="text" class="form-control border border-dark" id="editCouleur">
+				</div>
+			  </form>
+			</div>
 			<div class="modal-footer">
                 <div id="msgModal"></div>
-			  <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
-			  <button type="button" class="btn btn-success" id="saveChangesBtnModif">Enregistrer</button>
+			  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			  <button type="button" class="btn btn-success" id="saveChangesBtn">Save changes</button>
 			</div>
+		  </div>
 		  </div>
 		</div>
 	  </div>
 
-	 
+	  <!-- modal vue-->
 
+	  <div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title"></h5>
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+		
+			<div class="modal-footer">
+               
+			  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
     <script src="js/init_api.js"></script>
-    <script src="js/vins.js"></script>
+    <script src="js/couleurs.js"></script>
 </body>
 </html>
 
