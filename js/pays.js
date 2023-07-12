@@ -2,6 +2,7 @@ window.addEventListener('load', () => {
   const table = document.getElementById('table_id');
   table.className = "table table-dark table-hover container mt-5 text-center";
   const msg = document.getElementById('msg');
+  const limit = 15;
 
   function getCountries(urlApiPays) {
     let requestOptions = {
@@ -30,6 +31,22 @@ window.addEventListener('load', () => {
 
           tr.appendChild(actionsTd);
           table.appendChild(tr);
+
+          let count =  0;
+
+          for (let i = 0; i < table.rows.length; i++) {  // je check le nombre de lignes générées en fonction de ce qu'il y a dans l'API
+            if (table.rows[i].nodeName === "TR") {
+              count++;
+            }
+          }
+
+          if (count > limit) {  // si le nombre de tr dépasse la limite alors j'affiche le bouton qui me permet de scroll tout en bas
+            scrollTopButton.style.visibility = "visible";
+            scrollDownButton.style.visibility = "visible";
+          } else {
+            scrollTopButton.style.visibility = "hidden";
+            scrollDownButton.style.visibility = "hidden";
+          }
         });
 
                   /////////// ADD //////////////
@@ -66,17 +83,7 @@ window.addEventListener('load', () => {
 
                   
                   $('#addModal').modal('hide');
-                  msg.style = "font-size:25px"
-                  msg.innerHTML =
-                  "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouveau pays ajouté, il aura le code : " +
-                  data +
-                  "&#128079; <br> <button id='reloadWine' class='btn-primary'>Rechargez la liste des vins en cliquant ici !</button></div>";  
-        
-                  const btnReloadWines = document.getElementById('reloadWine');
-        
-                  btnReloadWines.addEventListener('click',()=>{
-                    location.reload();
-                  });     
+                 displayMsg(false,false,true,data);
                 })
                 .catch(function (error) {
                   alert("Ajax error: " + error);
@@ -104,7 +111,7 @@ window.addEventListener('load', () => {
             fetch(urlApiPays + "/" + codePays, requestOptions)
               .then((response) => response.json())
               .then(function () {
-                displayMsg(true,false,codePays)
+                displayMsg(true,false,false,codePays)
               })
               .catch(function (error) {
                 alert("Ajax error: " + error);
@@ -146,7 +153,7 @@ window.addEventListener('load', () => {
               fetch(urlApiPays + "/" + code, requestOptions)
                 .then((response) => response.json())
                 .then(function () {
-                 displayMsg(false,true,code)
+                 displayMsg(false,true,false,code)
                   row.cells[1].textContent = NomPaysInput.value.toUpperCase();
                   $('#editModal').modal('hide');
                 })
@@ -173,17 +180,21 @@ window.addEventListener('load', () => {
   }
 
 
-  function displayMsg(deleteRow, editRow, row) {
+  function displayMsg(deleteRow, editRow,addedRow, row) {
     msg.style.visibility = "visible";
   
     if (deleteRow) {
-      msg.style = "font-size:40px";
+      msg.style = "font-size:40px"
       msg.innerHTML =
-        "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Pays numéro "+row+" supprimé &#128532;</div>";
+        "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Appellation numéro "+row+" supprimée &#128532;</div>";
     } else if (editRow) {
-      msg.style = "font-size:40px";
+      msg.style = "font-size:40px"
       msg.innerHTML =
-        "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Pays numéro "+row+" modifié &#129488;</div>";
+        "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Appellation numéro "+row+" modifiée &#129488;</div>";
+    }else if(addedRow){
+      msg.style = "font-size:40px"
+      msg.innerHTML =
+        "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Appellation numéro "+row+" ajoutée &#128077;</div>";
     }
 
 
@@ -194,8 +205,10 @@ window.addEventListener('load', () => {
     setTimeout(function () {
       msg.style.visibility = "hidden";
       msg.classList.remove("fade-out");
-    }, 3000);
+      location.reload();
+    }, 2400);
   }
+
 
 
 
