@@ -32,20 +32,14 @@ a {
 }
 
 #scrollButton {
-    font-weight: bolder;
-    position: fixed;
-    top: 52%;
-    left: 84%;
-    background-color:#34568B;
- 
-  }
+  background-color: #34568B;
+  margin-left: 86%;
+}
 
-#scrollTopButton {
-    position: fixed;
-    left: 84%;
-    top: 45%;
+  #scrollTopButton {
     font-weight: bolder;
     background-color: #34568B;
+    margin-left: 97%;
 }
 
 
