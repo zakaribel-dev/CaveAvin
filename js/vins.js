@@ -1,9 +1,9 @@
 window.addEventListener("load", () => {
     const table = document.getElementById("table_id");
     table.className = "table table-dark table-hover container mt-5 text-center";
-    const msg = document.getElementById("msg");
     const limit = 10;
-
+    let wines = [];
+    
     function getWines(urlApiVins) {
         let requestOptions = {
             method: "GET",
@@ -13,87 +13,9 @@ window.addEventListener("load", () => {
           fetch(urlApiVins + "?include=COULEUR,REGION,APPELLATION&transform=1", requestOptions)
             .then((response) => response.json())
             .then(function (data) {
-              data.VIN.map(function (vinElement) {
-                let tr = document.createElement("tr");
-    
-                let codeVinTd = document.createElement("td");
-                codeVinTd.textContent = vinElement.CODEVIN;
-        
-                let nomVinTd = document.createElement("td");
-                nomVinTd.textContent = vinElement.NOM_CUVEE;
-        
-                let appellationTd = document.createElement("td");
-                appellationTd.textContent = vinElement.CODEAPPELLATION;
-        
-                let regionTd = document.createElement("td");
-                let couleurTd = document.createElement("td");
-                let cultureTd = document.createElement("td");
-                let commentairesTd = document.createElement("td");
-                let actionsTd = document.createElement("td");
-                actionsTd.style.width = "150px";
-                
-// ici je cherche à savoir si le code couleur de l'api COULEUR (color.CODECOULEUR) 
-// match bien avec le code couleur de l'api VIN (vinElement.CODECOULEUR)
-                let colorObj = vinElement.COULEUR.find((color) => color.CODECOULEUR === vinElement.CODECOULEUR);
+              wines = data;
 
-                if (colorObj) {
-                  couleurTd.textContent = colorObj.NOMCOULEUR;
-                } else {
-                  couleurTd.textContent = "Couleur non trouvée, désolé !";
-                }
-
-                // à la recherche de THE region :)
-                let regionObj = vinElement.REGION.find((region) => region.CODEREGION === vinElement.CODEREGION);
-                if (regionObj) {
-                    regionTd.textContent = regionObj.NOMREGION;
-                  } else {
-                    regionTd.textContent = "Region non trouvée sorry!";
-                  }
-                
-                  // à la recherche de THE appellation :)
-                  let appellationObj = vinElement.APPELLATION.find((appellation) => appellation.CODEAPPELLATION === vinElement.CODEAPPELLATION);
-                  if (appellationObj) {
-                      appellationTd.textContent = appellationObj.NOMAPPELLATION;
-                    } else {
-                      appellationTd.textContent = "appellation non trouvée sorry!!";
-                    }
-
-                cultureTd.textContent = vinElement.TYPE_DE_CULTURE;
-                commentairesTd.textContent = vinElement.COMMENTAIRES;
-        
-                actionsTd.innerHTML = `
-                  <button class="modif btn btn-info btn-sm fas fa-pencil-alt fa-sm"></button>
-                  <button class="delete btn btn-danger btn-sm fas fa-trash-alt fa-sm"></button>
-                  <button class="view btn btn-success btn-sm fas fa-eye fa-sm"></button>
-                `;
-        
-                tr.appendChild(codeVinTd);
-                tr.appendChild(nomVinTd);
-                tr.appendChild(appellationTd);
-                tr.appendChild(regionTd);
-                tr.appendChild(couleurTd);
-                tr.appendChild(cultureTd);
-                tr.appendChild(commentairesTd);
-                tr.appendChild(actionsTd);
-        
-                table.appendChild(tr);
-                let count =  0;
-
-                for (let i = 0; i < table.rows.length; i++) {  // je check le nombre de lignes générées en fonction de ce qu'il y a dans l'API
-                  if (table.rows[i].nodeName === "TR") {
-                    count++;
-                  }
-                }
-      
-                if (count > limit) {  // si le nombre de tr dépasse la limite alors j'affiche le bouton qui me permet de scroll tout en bas
-                  scrollTopButton.style.visibility = "visible";
-                  scrollDownButton.style.visibility = "visible";
-                } else {
-                  scrollTopButton.style.visibility = "hidden";
-                  scrollDownButton.style.visibility = "hidden";
-                }
-              });
-        
+              display();
               deleteWine();
               editWine();
               viewWine();
@@ -101,6 +23,9 @@ window.addEventListener("load", () => {
             .catch(function (error) {
               console.log("Une erreur s'est produite lors de la récupération des données :", error);
             });
+
+
+
   
       /////////// ADD ///////////
   
@@ -202,7 +127,93 @@ window.addEventListener("load", () => {
       });
   
 
+      //DISPLAY // 
+   
+      function display(){
 
+        wines.VIN.map(function (vinElement) {
+          let tr = document.createElement("tr");
+          tr.setAttribute('class','data');
+  
+          let codeVinTd = document.createElement("td");
+          codeVinTd.textContent = vinElement.CODEVIN;
+  
+          let nomVinTd = document.createElement("td");
+          nomVinTd.textContent = vinElement.NOM_CUVEE;
+  
+          let appellationTd = document.createElement("td");
+          appellationTd.textContent = vinElement.CODEAPPELLATION;
+  
+          let regionTd = document.createElement("td");
+          let couleurTd = document.createElement("td");
+          let cultureTd = document.createElement("td");
+          let commentairesTd = document.createElement("td");
+          let actionsTd = document.createElement("td");
+          actionsTd.style.width = "150px";
+          
+  // ici je cherche à savoir si le code couleur de l'api COULEUR (color.CODECOULEUR) 
+  // match bien avec le code couleur de l'api VIN (vinElement.CODECOULEUR)
+          let colorObj = vinElement.COULEUR.find((color) => color.CODECOULEUR === vinElement.CODECOULEUR);
+  
+          if (colorObj) {
+            couleurTd.textContent = colorObj.NOMCOULEUR;
+          } else {
+            couleurTd.textContent = "Couleur non trouvée, désolé !";
+          }
+  
+          // à la recherche de THE region :)
+          let regionObj = vinElement.REGION.find((region) => region.CODEREGION === vinElement.CODEREGION);
+          if (regionObj) {
+              regionTd.textContent = regionObj.NOMREGION;
+            } else {
+              regionTd.textContent = "Region non trouvée sorry!";
+            }
+          
+            // à la recherche de THE appellation :)
+            let appellationObj = vinElement.APPELLATION.find((appellation) => appellation.CODEAPPELLATION === vinElement.CODEAPPELLATION);
+            if (appellationObj) {
+                appellationTd.textContent = appellationObj.NOMAPPELLATION;
+              } else {
+                appellationTd.textContent = "appellation non trouvée sorry!!";
+              }
+  
+          cultureTd.textContent = vinElement.TYPE_DE_CULTURE;
+          commentairesTd.textContent = vinElement.COMMENTAIRES;
+  
+          actionsTd.innerHTML = `
+            <button class="modif btn btn-info btn-sm fas fa-pencil-alt fa-sm"></button>
+            <button class="delete btn btn-danger btn-sm fas fa-trash-alt fa-sm"></button>
+            <button class="view btn btn-success btn-sm fas fa-eye fa-sm"></button>
+          `;
+  
+          tr.appendChild(codeVinTd);
+          tr.appendChild(nomVinTd);
+          tr.appendChild(appellationTd);
+          tr.appendChild(regionTd);
+          tr.appendChild(couleurTd);
+          tr.appendChild(cultureTd);
+          tr.appendChild(commentairesTd);
+          tr.appendChild(actionsTd);
+  
+          table.appendChild(tr);
+          let count =  0;
+  
+          for (let i = 0; i < table.rows.length; i++) {  // je check le nombre de lignes générées en fonction de ce qu'il y a dans l'API
+            if (table.rows[i].nodeName === "TR") {
+              count++;
+            }
+          }
+  
+          if (count > limit) {  // si le nombre de tr dépasse la limite alors j'affiche le bouton qui me permet de scroll tout en bas
+            scrollTopButton.style.visibility = "visible";
+            scrollDownButton.style.visibility = "visible";
+          } else {
+            scrollTopButton.style.visibility = "hidden";
+            scrollDownButton.style.visibility = "hidden";
+          }
+        });
+      }
+    
       // DELETE //
 
       function deleteWine(){
@@ -334,17 +345,6 @@ window.addEventListener("load", () => {
                 fetch(urlApiVins + "/" + code, requestOptionsEdit)
                   .then((response) => response.json())
                   .then(function () {
-                    msg.innerHTML =
-                      "<div class='alert alert-primary' role='alert' style=font-weight:bolder;>Vin " +
-                      code +
-                      " modifié.</div>";
-
-                      const EditNomVin = document.getElementById("EditNomVin");
-                      const EditCulture = document.getElementById("ModifCulture");
-                      const EditCommentaire = document.getElementById("ModifCommentaire");
-                      row.cells[1].textContent = EditNomVin.value;
-                      row.cells[5].textContent = EditCulture.value;
-                      row.cells[6].textContent = EditCommentaire.value;
 
                       displayMsg(false,true,false,code)
 
@@ -359,7 +359,6 @@ window.addEventListener("load", () => {
       }
 
       function displayMsg(deleteRow, editRow,addedRow, row) {
-        msg.style.visibility = "visible";
       
         if (deleteRow) {
     
@@ -413,44 +412,46 @@ window.addEventListener("load", () => {
       }
   
   }
+  function searchWines() {
+    const searchBarValue = $("#search").val();
+    const rows = table.getElementsByClassName("data");
+    let matchesFound = false; // flag
   
-  function searchWines(code) {
-    if (code) {
-      btnReload.style.visibility = "visible";
-      btnReload.addEventListener("click", () => {
-        location.reload();
-      });
-
-      const rows = table.getElementsByTagName("tr");
-      for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        const rowCode = row.cells[0].textContent;
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      let rowMatches = false; // flag
   
-        if (rowCode !== code) {
-          row.style.display = "none";
-        } else {
-          row.style.display = "";
+      for (let j = 0; j < row.cells.length; j++) {
+        const cell = row.cells[j];
+        const cellValue = cell.textContent.toLowerCase(); // je met toLowerCase pour faire en sorte que ce soit pas sensible à la casse
+  
+        if (cellValue.includes(searchBarValue.toLowerCase())) { // ici, si un l'input match avec les l'une des cellules de toute les row 
+          //alors j'active le flag pour dire qu'il ya un match
+          rowMatches = true;
+          break;
         }
       }
-    } else {
-      Swal.fire('Hey &#128545; !', "<b>Merci d'entrer un code...</b>", 'error');
+  
+      if (rowMatches) {
+        row.style.display = "";
+        matchesFound = true;
+      } else {
+        row.style.display = "none";
+      }
+    }
+  
+    if (!matchesFound) {
+      Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour la vin numéro ' + searchBarValue + ' ...</b>', 'error');
     }
   }
   
-    const form = document.getElementById("form_id");
-    const codeInput = document.getElementById("code");
-    const btnReload = document.getElementById("reload");
+    const Input = document.getElementById("search");
     const scrollDownButton = document.getElementById('scrollButton');
     const scrollTopButton = document.getElementById('scrollTopButton');
-    btnReload.style.visibility = "hidden";
   
-    form.addEventListener("submit", (event) => {
+    Input.addEventListener("input", (event) => {
       event.preventDefault();
-    
-      scrollDownButton.style.visibility = "hidden";
-      scrollTopButton.style.visibility = "hidden";
-      const code = codeInput.value;
-      searchWines(code);
+      searchWines();
     });
 
     scrollDownButton.addEventListener('click', function() {

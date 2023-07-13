@@ -11,7 +11,7 @@
   }
 
   body {
-	background-color: #331a00;
+	background-color: #92A8D1;
 		padding-top: 70px; 
 }
 
@@ -36,13 +36,16 @@ a {
     position: fixed;
     top: 52%;
     left: 84%;
-}
+    background-color:#34568B;
+ 
+  }
 
 #scrollTopButton {
     position: fixed;
     left: 84%;
     top: 45%;
     font-weight: bolder;
+    background-color: #34568B;
 }
 
 
@@ -61,6 +64,21 @@ a {
   transition: background-color 0.3s ease;
 }
 
+#new_wine {
+  background-color: #34568B !important;
+}
+#new_region {
+  background-color: #34568B !important;
+}
+#new_country {
+  background-color: #34568B !important;
+}
+#new_color {
+  background-color: #34568B !important;
+}
+#new_appellation {
+  background-color: #34568B !important;
+}
 .vin-button:hover {
   background-color: #aa1f33;
 }

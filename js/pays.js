@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
       .then(function (data) {
         data.PAYS.records.forEach(function (record) {
           let tr = document.createElement("tr");
-
+          tr.setAttribute('class','data');
           let actionsTd = document.createElement("td");
           actionsTd.innerHTML = `
             <button class="modif btn btn-info btn-sm fas fa-pencil-alt fa-sm"></button>
@@ -48,6 +48,7 @@ window.addEventListener('load', () => {
             scrollDownButton.style.visibility = "hidden";
           }
         });
+
 
                   /////////// ADD //////////////
 
@@ -209,45 +210,49 @@ window.addEventListener('load', () => {
 
           /////////// SEARCH //////////////
 
-  function searchCountries(code) {
-    if (code) {
-      btnReload.style.visibility = "visible";
-      btnReload.addEventListener("click", () => {
-        location.reload();
-      });
+          function searchCountries() {
+            const searchBarValue = $("#search").val();
+            const rows = table.getElementsByClassName("data");
+            let matchesFound = false; // flag
+          
+            for (let i = 0; i < rows.length; i++) {
+              const row = rows[i];
+              let rowMatches = false; // flag
+          
+              for (let j = 0; j < row.cells.length; j++) {
+                const cell = row.cells[j];
+                const cellValue = cell.textContent.toLowerCase(); // je met toLowerCase pour faire en sorte que ce soit pas sensible à la casse
+          
+                if (cellValue.includes(searchBarValue.toLowerCase())) { // ici, si un l'input match avec les l'une des cellules de toute les row 
+                  //alors j'active le flag pour dire qu'il ya un match
+                  rowMatches = true;
+                  break;
+                }
+              }
+          
+              if (rowMatches) {
+                row.style.display = "";
+                matchesFound = true;
+              } else {
+                row.style.display = "none";
+              }
+            }
+          
+            if (!matchesFound) {
+              Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour la vin numéro ' + searchBarValue + ' ...</b>', 'error');
+            }
+          }
 
-      const rows = table.getElementsByTagName("tr");
-      for (let i = 0; i < rows.length; i++) {
-        const row = rows[i];
-        const rowCode = row.cells[0].textContent;
+          const Input = document.getElementById("search");
+          const scrollDownButton = document.getElementById('scrollButton');
+          const scrollTopButton = document.getElementById('scrollTopButton');
+        
+          Input.addEventListener("input", (event) => {
+            event.preventDefault();
   
-        if (rowCode !== code) {
-          row.style.display = "none";
-        } else {
-          row.style.display = "";
-        }
-      }
-    } else {
-      Swal.fire('Hey &#128545; !', "<b>Merci d'entrer un code...</b>", 'error');
-    }
-  }
-
-  const form = document.getElementById('form_id');
-  const codeInput = document.getElementById('code');
-  const btnReload = document.getElementById('reload');
-  const scrollDownButton = document.getElementById('scrollButton');
-  const scrollTopButton = document.getElementById('scrollTopButton');
-  btnReload.style.visibility = "hidden";
-
- 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-  
-    scrollDownButton.style.visibility = "hidden";
-    scrollTopButton.style.visibility = "hidden";
-    const code = codeInput.value;
-    searchCountries(code);
-  });
+            const input = Input.value;
+            searchCountries(input);
+          });
 
   scrollDownButton.addEventListener('click', function() {
     const bottomElement = document.documentElement;

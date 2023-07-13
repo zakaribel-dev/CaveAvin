@@ -41,12 +41,8 @@
 <div class="container">
 <h1 class="display-1">Liste des vins</h1>
 
-<form id="form_id">
-<input type="text" id="code" class="vin-input" placeholder="Entrez un code vin...">
-<button type="submit" class="vin-button">Rechercher</button><br><br>
-<button id="reload" class="btn btn-secondary">réafficher la liste vins</button>
-</form>
-<br>
+<input type="text" id="search" class="vin-input" placeholder="Entrez un mot clé.."> 
+<br><br>
 
  <!-- AJOUT -->
 
@@ -123,8 +119,8 @@
 
 <div id="msg"></div>
 
-    <table id="table_id">
-        <tr>
+    <table id="table_id" >
+        <thead>
 		  <th>Code Vin</th>
 		  <th>Nom du Vin</th>
 		  <th>Appellation</th>
@@ -133,7 +129,7 @@
 		  <th>Culture</th>
           <th>Commentaires</th>
           <th>Actions</th>
-        </tr>
+		</thead>
       </table>
     </div>
 

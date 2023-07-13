@@ -15,7 +15,7 @@ window.addEventListener("load", () => {
       .then(function (data) {
         data.REGION.map(function (regionElement) {
           let tr = document.createElement("tr");
-
+          tr.setAttribute('class','data');
           let codeRegionTd = document.createElement("td");
           codeRegionTd.textContent = regionElement.CODEREGION;
 
@@ -278,44 +278,47 @@ function displayMsg(deleteRow, editRow,addedRow, row) {
   }
 }
 
-function searchRegions(code) {
-  if (code) {
-    btnReload.style.visibility = "visible";
-    btnReload.addEventListener("click", () => {
-      location.reload();
-    });
+function searchRegions() {
+  const searchBarValue = $("#search").val();
+  const rows = table.getElementsByClassName("data");
+  let matchesFound = false; // flag
 
-    const rows = table.getElementsByTagName("tr");
-    for (let i = 0; i < rows.length; i++) {
-      const row = rows[i];
-      const rowCode = row.cells[0].textContent;
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    let rowMatches = false; // flag
 
-      if (rowCode !== code) {
-        row.style.display = "none";
-      } else {
-        row.style.display = "";
+    for (let j = 0; j < row.cells.length; j++) {
+      const cell = row.cells[j];
+      const cellValue = cell.textContent.toLowerCase(); // je met toLowerCase pour faire en sorte que ce soit pas sensible à la casse
+
+      if (cellValue.includes(searchBarValue.toLowerCase())) { // ici, si un l'input match avec les l'une des cellules de toute les row 
+        //alors j'active le flag pour dire qu'il ya un match
+        rowMatches = true;
+        break;
       }
     }
-  } else {
-    Swal.fire('Hey &#128545; !', "<b>Merci d'entrer un code...</b>", 'error');
+
+    if (rowMatches) {
+      row.style.display = "";
+      matchesFound = true;
+    } else {
+      row.style.display = "none";
+    }
+  }
+
+  if (!matchesFound) {
+    Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour la vin numéro ' + searchBarValue + ' ...</b>', 'error');
   }
 }
 
-  const form = document.getElementById("form_id");
-  const codeInput = document.getElementById("code");
-  const btnReload = document.getElementById("reload");
-  const scrollDownButton = document.getElementById('scrollButton');
-  const scrollTopButton = document.getElementById('scrollTopButton');
-  btnReload.style.visibility = "hidden";
+const Input = document.getElementById("search");
+const scrollDownButton = document.getElementById('scrollButton');
+const scrollTopButton = document.getElementById('scrollTopButton');
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-  
-    scrollDownButton.style.visibility = "hidden";
-    scrollTopButton.style.visibility = "hidden";
-    const code = codeInput.value;
-    searchRegions(code);
-  });
+Input.addEventListener("input", (event) => {
+  event.preventDefault();
+  searchRegions();
+});
 
   
   scrollDownButton.addEventListener('click', function() {
