@@ -122,17 +122,7 @@ window.addEventListener("load", () => {
               .then((response) => response.json())
               .then(function (data) {
                 $("#addModal").modal("hide");
-                msg.style = "font-size:25px"
-                msg.innerHTML =
-                "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouvelle région ajoutée, elle aura le code : " +
-                data +
-                "&#128079; <br> <button id='reloadWine' class='btn-primary'>Rechargez la liste des région en cliquant ici !</button></div>";  
-      
-                const btnReloadWines = document.getElementById('reloadWine');
-      
-                btnReloadWines.addEventListener('click',()=>{
-                  location.reload();
-                });     
+               displayMsg(false,false,true,data);
               })
               .catch(function (error) {
                 alert("Ajax error: " + error);
@@ -165,7 +155,7 @@ window.addEventListener("load", () => {
           fetch(urlApiRegion + "/" + codeRegion, requestOptions)
             .then((response) => response.json())
             .then(function () {
-              displayMsg(true,false,codeRegion)
+              displayMsg(true,false,false,codeRegion)
             })
             .catch(function (error) {
               alert("Ajax error: " + error);
@@ -231,7 +221,7 @@ window.addEventListener("load", () => {
               fetch(urlApiRegion + "/" + code, requestOptions)
                 .then((response) => response.json())
                 .then(function () {
-                  displayMsg(false,true,code)
+                  displayMsg(false,true,false,code)
                   row.cells[2].textContent = NomRegionInput.value;
                   $("#editModal").modal("hide");
                 })
@@ -263,12 +253,10 @@ window.addEventListener("load", () => {
 
 }
 
-function displayMsg(deleteRow, editRow,addedRow, row) {
-  msg.style.visibility = "visible";
-
+function displayMsg(deleteRow, editRow,addedRow, row) {  
   if (deleteRow) {
 
-    Swal.fire('Hey &#128532; !', "<b>Couleur numéro " +row+ " supprimée</b>", 'warning').then((result) => {
+    Swal.fire('Hey &#128532; !', "<b>Région numéro " +row+ " supprimée</b>", 'warning').then((result) => {
       if (result.isConfirmed) {
         location.reload();
       }
@@ -276,13 +264,13 @@ function displayMsg(deleteRow, editRow,addedRow, row) {
 
   } else if (editRow) {
 
-    Swal.fire('Hey &#129488; !', "<b>Couleur numéro " +row+ " modifiée</b>", 'info').then((result) => {
+    Swal.fire('Hey &#129488; !', "<b>Région numéro " +row+ " modifiée</b>", 'info').then((result) => {
       if (result.isConfirmed) {
         location.reload();
       }
     });
   }else if(addedRow){
-    Swal.fire('Hey &#128077; !', "<b>Couleur numéro " +row+ " ajoutée</b>", 'success').then((result) => {
+    Swal.fire('Hey &#128077; !', "<b>Région numéro " +row+ " ajoutée</b>", 'success').then((result) => {
       if (result.isConfirmed) {
         location.reload();
       }

@@ -180,9 +180,7 @@ window.addEventListener('load', () => {
   }
 
 
-  function displayMsg(deleteRow, editRow,addedRow, row) {
-    msg.style.visibility = "visible";
-  
+  function displayMsg(deleteRow, editRow,addedRow, row) {  
     if (deleteRow) {
 
       Swal.fire('Hey &#128532; !', "<b>Pays numéro " +row+ " supprimé</b>", 'warning').then((result) => {
