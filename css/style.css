@@ -1,0 +1,85 @@
+#msg {
+    position: fixed;
+    top: 6%;
+    left: 5%;
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  body {
+	background-color: #331a00;
+		padding-top: 70px; 
+}
+
+table{
+	border: 3px solid rgb(129, 82, 82) !important;
+}
+
+h1, h2, h3 {
+	color: rgb(153, 57, 57)
+}
+
+p {
+  color: #d9d9d9; 
+}
+
+a {
+  color: #a17a53;
+}
+
+#scrollButton {
+    font-weight: bolder;
+    position: fixed;
+    top: 52%;
+    left: 84%;
+}
+
+#scrollTopButton {
+    position: fixed;
+    left: 84%;
+    top: 45%;
+    font-weight: bolder;
+}
+
+
+.vin-button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #8c1725;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.vin-button:hover {
+  background-color: #aa1f33;
+}
+
+.vin-button:active {
+  background-color: #75141f;
+}
+.vin-input {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+}
+
+.vin-input:hover {
+  border: 1px solid #8c1725;
+}
+
+.vin-input:focus {
+  border: 1px solid #aa1f33;
+  outline: none;
+}

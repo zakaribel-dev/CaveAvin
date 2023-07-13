@@ -2,6 +2,7 @@ window.addEventListener("load", () => {
   const table = document.getElementById("table_id");
   table.className = "table table-dark table-hover container mt-5 text-center";
   const msg = document.getElementById("msg");
+  const limit = 10;
 
   function getRegions(urlApiRegion) {
     let requestOptions = {
@@ -42,6 +43,22 @@ window.addEventListener("load", () => {
           tr.appendChild(regionTd);
           tr.appendChild(actionsTd);
           table.appendChild(tr);
+
+          let count =  0;
+
+          for (let i = 0; i < table.rows.length; i++) {  // je check le nombre de lignes générées en fonction de ce qu'il y a dans l'API
+            if (table.rows[i].nodeName === "TR") {
+              count++;
+            }
+          }
+
+          if (count > limit) {  // si le nombre de tr dépasse la limite alors j'affiche le bouton qui me permet de scroll tout en bas
+            scrollTopButton.style.visibility = "visible";
+            scrollDownButton.style.visibility = "visible";
+          } else {
+            scrollTopButton.style.visibility = "hidden";
+            scrollDownButton.style.visibility = "hidden";
+          }
 
         });
 
@@ -235,13 +252,10 @@ window.addEventListener("load", () => {
           let nomPays = row.cells[1].textContent;
           let nomRegion = row.cells[2].textContent;
           
-          // Sélectionner les éléments de la modal "View"
           let modalTitle = document.querySelector('#viewModal .modal-title');
           
-          // Mettre à jour le contenu de la modal avec les informations du pays
           modalTitle.innerHTML = "Code de la région : " + codeRegion + "<br>Pays : " + nomPays + "<br>Région : " + nomRegion;
           
-          // Afficher la modal "View"
           $('#viewModal').modal('show');
         });
       }
@@ -249,31 +263,32 @@ window.addEventListener("load", () => {
 
 }
 
-
-function displayMsg(deleteRow, editRow, row) {
+function displayMsg(deleteRow, editRow,addedRow, row) {
   msg.style.visibility = "visible";
 
   if (deleteRow) {
-    msg.style = "font-size:40px"
-    msg.innerHTML =
-      "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Région numéro "+row+" supprimée &#128532;</div>";
+
+    Swal.fire('Hey &#128532; !', "<b>Couleur numéro " +row+ " supprimée</b>", 'warning').then((result) => {
+      if (result.isConfirmed) {
+        location.reload();
+      }
+    });
+
   } else if (editRow) {
-    msg.style = "font-size:40px"
-    msg.innerHTML =
-      "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Région numéro "+row+" modifiée &#129488;</div>";
+
+    Swal.fire('Hey &#129488; !', "<b>Couleur numéro " +row+ " modifiée</b>", 'info').then((result) => {
+      if (result.isConfirmed) {
+        location.reload();
+      }
+    });
+  }else if(addedRow){
+    Swal.fire('Hey &#128077; !', "<b>Couleur numéro " +row+ " ajoutée</b>", 'success').then((result) => {
+      if (result.isConfirmed) {
+        location.reload();
+      }
+    });
   }
-
-
-  setTimeout(function () {
-    msg.classList.add("fade-out");
-  }, 1000);
-
-  setTimeout(function () {
-    msg.style.visibility = "hidden";
-    msg.classList.remove("fade-out");
-  }, 2400);
 }
-
 
 function searchRegions(code) {
   if (code) {
@@ -308,6 +323,8 @@ function searchRegions(code) {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
   
+    scrollDownButton.style.visibility = "hidden";
+    scrollTopButton.style.visibility = "hidden";
     const code = codeInput.value;
     searchRegions(code);
   });

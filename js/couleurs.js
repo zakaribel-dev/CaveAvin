@@ -2,9 +2,9 @@ window.addEventListener('load', () => {
   const table = document.getElementById('table_id');
   table.className = "table table-dark table-hover container mt-5 text-center";
   const msg = document.getElementById('msg');
-  const limit = 15;
+  const limit = 10;
 
-  function getCountries(urlApiCouleur) {
+  function getColors(urlApiCouleur) {
     let requestOptions = {
       method: "GET",
       redirect: "follow",
@@ -181,33 +181,28 @@ window.addEventListener('load', () => {
     msg.style.visibility = "visible";
   
     if (deleteRow) {
-      msg.style = "font-size:40px"
-      msg.innerHTML =
-        "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Appellation numéro "+row+" supprimée &#128532;</div>";
+
+      Swal.fire('Hey &#128532; !', "<b>Couleur numéro " +row+ " supprimée</b>", 'warning').then((result) => {
+        if (result.isConfirmed) {
+          location.reload();
+        }
+      });
+
     } else if (editRow) {
-      msg.style = "font-size:40px"
-      msg.innerHTML =
-        "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Appellation numéro "+row+" modifiée &#129488;</div>";
+
+      Swal.fire('Hey &#129488; !', "<b>Couleur numéro " +row+ " modifiée</b>", 'info').then((result) => {
+        if (result.isConfirmed) {
+          location.reload();
+        }
+      });
     }else if(addedRow){
-      msg.style = "font-size:40px"
-      msg.innerHTML =
-        "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Appellation numéro "+row+" ajoutée &#128077;</div>";
+      Swal.fire('Hey &#128077; !', "<b>Couleur numéro " +row+ " ajoutée</b>", 'success').then((result) => {
+        if (result.isConfirmed) {
+          location.reload();
+        }
+      });
     }
-
-
-    setTimeout(function () {
-      msg.classList.add("fade-out");
-    }, 1000);
-  
-    setTimeout(function () {
-      msg.style.visibility = "hidden";
-      msg.classList.remove("fade-out");
-      location.reload();
-    }, 2400);
   }
-
-
-
 
           /////////// SEARCH //////////////
 
@@ -246,6 +241,8 @@ window.addEventListener('load', () => {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
   
+    scrollDownButton.style.visibility = "hidden";
+    scrollTopButton.style.visibility = "hidden";
     const code = codeInput.value;
     searchColors(code);
   });
@@ -259,5 +256,5 @@ window.addEventListener('load', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }); 
 
-  getCountries(urlApiCouleur);
+  getColors(urlApiCouleur);
 });

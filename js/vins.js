@@ -2,8 +2,9 @@ window.addEventListener("load", () => {
     const table = document.getElementById("table_id");
     table.className = "table table-dark table-hover container mt-5 text-center";
     const msg = document.getElementById("msg");
-  
-    function getRegions(urlApiVins) {
+    const limit = 10;
+
+    function getWines(urlApiVins) {
         let requestOptions = {
             method: "GET",
             redirect: "follow",
@@ -76,11 +77,26 @@ window.addEventListener("load", () => {
                 tr.appendChild(actionsTd);
         
                 table.appendChild(tr);
+                let count =  0;
+
+                for (let i = 0; i < table.rows.length; i++) {  // je check le nombre de lignes générées en fonction de ce qu'il y a dans l'API
+                  if (table.rows[i].nodeName === "TR") {
+                    count++;
+                  }
+                }
+      
+                if (count > limit) {  // si le nombre de tr dépasse la limite alors j'affiche le bouton qui me permet de scroll tout en bas
+                  scrollTopButton.style.visibility = "visible";
+                  scrollDownButton.style.visibility = "visible";
+                } else {
+                  scrollTopButton.style.visibility = "hidden";
+                  scrollDownButton.style.visibility = "hidden";
+                }
               });
         
-              deleteRegion();
-              editRegion();
-              viewRegion();
+              deleteWine();
+              editWine();
+              viewWine();
             })
             .catch(function (error) {
               console.log("Une erreur s'est produite lors de la récupération des données :", error);
@@ -175,17 +191,8 @@ window.addEventListener("load", () => {
                 .then((response) => response.json())
                 .then(function (data) {
                   $("#addModal").modal("hide");
-                  msg.style = "font-size:25px"
-                  msg.innerHTML =
-                  "<div class='alert alert-success' role='alert' style=font-weight:bolder;>Nouveau vin ajouté, il aura le code : " +
-                  data +
-                  "&#128079; <br> <button id='reloadWine' class='btn-primary'>Rechargez la liste des vins en cliquant ici !</button></div>";  
-        
-                  const btnReloadWines = document.getElementById('reloadWine');
-        
-                  btnReloadWines.addEventListener('click',()=>{
-                    location.reload();
-                  })                    
+                  displayMsg(false,false,true,data)
+
                 })
                 .catch(function (error) {
                   alert("Ajax error: " + error);
@@ -198,7 +205,7 @@ window.addEventListener("load", () => {
 
       // DELETE //
 
-      function deleteRegion(){
+      function deleteWine(){
         let btnDelete = document.getElementsByClassName("delete");
       
         for (let i = 0; i < btnDelete.length; i++) {
@@ -219,7 +226,7 @@ window.addEventListener("load", () => {
               .then((response) => response.json())
               .then(function () {
 
-                  displayMsg(true,false,codeVin);
+                  displayMsg(true,false,false,codeVin);
               })
               .catch(function (error) {
                 alert("Ajax error: " + error);
@@ -231,7 +238,7 @@ window.addEventListener("load", () => {
 
              // EDIT //
   
-      function editRegion(){
+      function editWine(){
   
         fetch(urlApiVins + "?include=COULEUR,REGION,APPELLATION&transform=1", requestOptions)
         .then((response) => response.json())
@@ -339,7 +346,7 @@ window.addEventListener("load", () => {
                       row.cells[5].textContent = EditCulture.value;
                       row.cells[6].textContent = EditCommentaire.value;
 
-                      displayMsg(false,true,code)
+                      displayMsg(false,true,false,code)
 
                     $("#editModal").modal("hide");
                   })
@@ -351,34 +358,35 @@ window.addEventListener("load", () => {
         }
       }
 
-      function displayMsg(deleteRow, editRow, row) {
+      function displayMsg(deleteRow, editRow,addedRow, row) {
         msg.style.visibility = "visible";
       
         if (deleteRow) {
-          msg.style = "font-size:40px"
-          msg.innerHTML =
-            "<div class='alert alert-danger' role='alert' style=font-weight:bolder;>Vin numéro "+row+" supprimé &#128532;</div>";
+    
+          Swal.fire('Hey &#128532; !', "<b>Vin numéro " +row+ " supprimé</b>", 'warning').then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            }
+          });
+    
         } else if (editRow) {
-          msg.style = "font-size:40px"
-          msg.innerHTML =
-            "<div class='alert alert-primary' role='alert'style=font-weight:bolder;>Vin numéro "+row+" modifié &#129488;</div>";
+    
+          Swal.fire('Hey &#129488; !', "<b>Vin numéro " +row+ " modifié</b>", 'info').then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            }
+          });
+        }else if(addedRow){
+          Swal.fire('Hey &#128077; !', "<b>Vin numéro " +row+ " ajouté</b>", 'success').then((result) => {
+            if (result.isConfirmed) {
+              location.reload();
+            }
+          });
         }
-      
-
-
-
-        setTimeout(function () {
-          msg.classList.add("fade-out");
-        }, 1000);
-      
-        setTimeout(function () {
-          msg.style.visibility = "hidden";
-          msg.classList.remove("fade-out");
-        }, 2400);
       }
       
   
-      function viewRegion() {
+      function viewWine() {
         let btnVue = document.getElementsByClassName('view');
         for (let i = 0; i < btnVue.length; i++) {
           btnVue[i].addEventListener('click', function () {
@@ -439,6 +447,8 @@ window.addEventListener("load", () => {
     form.addEventListener("submit", (event) => {
       event.preventDefault();
     
+      scrollDownButton.style.visibility = "hidden";
+      scrollTopButton.style.visibility = "hidden";
       const code = codeInput.value;
       searchWines(code);
     });
@@ -452,6 +462,6 @@ window.addEventListener("load", () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   
-    getRegions(urlApiVins)
+    getWines(urlApiVins)
   });
   
