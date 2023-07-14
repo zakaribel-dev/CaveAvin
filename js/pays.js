@@ -178,8 +178,8 @@ window.addEventListener('load', () => {
                   fetch(urlApiPays + "/" + code, requestOptions)
                     .then((response) => response.json())
                     .then(function () {
-                     displayMsg(false,true,false,code,row)
                       row.cells[1].textContent = NomPaysInput.value.toUpperCase();
+                     displayMsg(false,true,false,code,row)
                       $('#editModal').modal('hide');
                     })
                     .catch(function (error) {

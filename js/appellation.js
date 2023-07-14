@@ -173,8 +173,8 @@ window.addEventListener('load', () => {
                   fetch(urlApiAppellation + "/" + code, requestOptions)
                     .then((response) => response.json())
                     .then(function () {
+                     row.cells[1].textContent =NomAppellationInput.value;
                      displayMsg(false,true,code,row)
-                      row.cells[1].textContent =NomAppellationInput.value;
                         $('#editModal').modal('hide');
                         displayMsg(false,true,false,code,row)
                     })

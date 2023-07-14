@@ -249,8 +249,9 @@ window.addEventListener("load", () => {
                 fetch(urlApiRegion + "/" + code, requestOptions)
                   .then((response) => response.json())
                   .then(function () {
-                    displayMsg(false,true,false,code,row)
                     row.cells[2].textContent = NomRegionInput.value;
+
+                    displayMsg(false,true,false,code,row)
                     $("#editModal").modal("hide");
                   })
                   .catch(function (error) {

@@ -167,8 +167,8 @@ window.addEventListener('load', () => {
                   fetch(urlApiCouleur + "/" + code, requestOptions)
                     .then((response) => response.json())
                     .then(function () {
+                     row.cells[1].textContent =  ColorInput.value.toUpperCase();
                      displayMsg(false,true,false,code,row)
-                      row.cells[1].textContent =  ColorInput.value.toUpperCase();
                       $('#editModal').modal('hide');
                     })
                     .catch(function (error) {
