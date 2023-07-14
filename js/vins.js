@@ -2,6 +2,7 @@ window.addEventListener("load", () => {
     const table = document.getElementById("table_id");
     table.className = "table table-dark table-hover container mt-5 text-center";
     const limit = 10;
+
     let wines = [];
     
     function getWines(urlApiVins) {
@@ -126,11 +127,10 @@ window.addEventListener("load", () => {
           });
       });
   
-
       //DISPLAY // 
    
       function display(){
-
+  
         wines.VIN.map(function (vinElement) {
           let tr = document.createElement("tr");
           tr.setAttribute('class','data');
@@ -151,14 +151,18 @@ window.addEventListener("load", () => {
           let actionsTd = document.createElement("td");
           actionsTd.style.width = "150px";
           
+
   // ici je cherche à savoir si le code couleur de l'api COULEUR (color.CODECOULEUR) 
-  // match bien avec le code couleur de l'api VIN (vinElement.CODECOULEUR)
+  // match bien avec le code couleur de l'api VIN (vinElement.CODECOULEUR) et ce, en utilisant la fonction "find"
           let colorObj = vinElement.COULEUR.find((color) => color.CODECOULEUR === vinElement.CODECOULEUR);
-  
+    // A savoir que vinElement.COULEUR tout simplement car quand j'ai fait mon call api, j'ai ajouté l'api COULEUR dans mon include 
+  //c'est pour ça que j'y ai accès
+
           if (colorObj) {
-            couleurTd.textContent = colorObj.NOMCOULEUR;
+    // si la fonction find renvoie true (c'est àa dire qu'il ya un match) alors on recupere la valeur NOMCOULEUR de l'api COULEUR
+            couleurTd.textContent = colorObj.NOMCOULEUR; 
           } else {
-            couleurTd.textContent = "Couleur non trouvée, désolé !";
+            couleurTd.textContent = "Couleur non trouvée, désolé !!";
           }
   
           // à la recherche de THE region :)
@@ -216,38 +220,47 @@ window.addEventListener("load", () => {
     
       // DELETE //
 
-      function deleteWine(){
+      function deleteWine() {
         let btnDelete = document.getElementsByClassName("delete");
       
         for (let i = 0; i < btnDelete.length; i++) {
           btnDelete[i].addEventListener("click", function () {
             let row = this.parentNode.parentNode;
             let codeVin = row.childNodes[0].textContent;
-    
-            table.removeChild(row);
-    
-            let requestOptions = {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            };
-    
-            fetch(urlApiVins + "/" + codeVin, requestOptions)
-              .then((response) => response.json())
-              .then(function () {
+      
+            Swal.fire({
+              title: '&#128552;',
+              html: "<b>Vous êtes sûr de vouloir supprimer le vin " + codeVin + " ?</b>",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Oui',
+              cancelButtonText: 'Non'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                table.removeChild(row);
+      
+                let requestOptions = {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                };
 
-                  displayMsg(true,false,false,codeVin);
-              })
-              .catch(function (error) {
-                alert("Ajax error: " + error);
-              });
+                fetch(urlApiVins + "/" + codeVin, requestOptions)
+                  .then((response) => response.json())
+                  .then(function () {
+                    displayMsg(true, false, false, codeVin);
+                  })
+                  .catch(function (error) {
+                    alert("Ajax error: " + error);
+                  });
+               }
+            });
           });
         }
       }
-      
 
-             // EDIT //
+        // EDIT //
   
       function editWine(){
   
@@ -313,78 +326,94 @@ window.addEventListener("load", () => {
             EditNomVin.value = row.cells[1].textContent;
             EditCulture.value = row.cells[5].textContent
             EditCommentaire.value = row.cells[6].textContent
-
     
             document .getElementById("saveChangesBtnModif").addEventListener("click", () => {
-              const EditNomVin =document.getElementById("EditNomVin").value;
-              const EditCulture =document.getElementById("ModifCulture").value;
-              const EditCommentaire =document.getElementById("ModifCommentaire").value;
-  
-              const selectAppellation = document.getElementById("id_selectEditAppellation").value;
-              const selectColor = document.getElementById("id_selectEditColor").value;
-              const selectRegion = document.getElementById("id_selectEditRegion").value;
-  
-                
-              let requestOptionsEdit = {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-  
-                body: JSON.stringify({
-                  CODEAPPELLATION: selectAppellation,
-                  CODECOULEUR : selectColor,
-                  CODEREGION : selectRegion,
-                  NOM_CUVEE: EditNomVin,
-                  COMMENTAIRES : EditCommentaire,
-                  TYPE_DE_CULTURE : EditCulture
-                }),
-              };
+
+
+              Swal.fire({
+                html: "<b>Vous êtes sûr de vouloir modifier le vin " + code + " ?</b>",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Oui',
+                cancelButtonText: 'Non'
+              }).then((result) => {
+                if (result.isConfirmed) {
+             
+                  const EditNomVin =document.getElementById("EditNomVin").value;
+                  const EditCulture =document.getElementById("ModifCulture").value;
+                  const EditCommentaire =document.getElementById("ModifCommentaire").value;
+      
+                  const selectAppellation = document.getElementById("id_selectEditAppellation").value;
+                  const selectColor = document.getElementById("id_selectEditColor").value;
+                  const selectRegion = document.getElementById("id_selectEditRegion").value;
     
-           
-                fetch(urlApiVins + "/" + code, requestOptionsEdit)
-                  .then((response) => response.json())
-                  .then(function () {
-
-                      displayMsg(false,true,false,code)
-
-                    $("#editModal").modal("hide");
-                  })
-                  .catch(function (error) {
-                    alert("Ajax error: " + error);
-                  });
-              });
+                    
+                  let requestOptionsEdit = {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/x-www-form-urlencoded",
+                    },
+      
+                    body: JSON.stringify({
+                      CODEAPPELLATION: selectAppellation,
+                      CODECOULEUR : selectColor,
+                      CODEREGION : selectRegion,
+                      NOM_CUVEE: EditNomVin,
+                      COMMENTAIRES : EditCommentaire,
+                      TYPE_DE_CULTURE : EditCulture
+                    }),
+                  };
+        
+               
+                    fetch(urlApiVins + "/" + code, requestOptionsEdit)
+                      .then((response) => response.json())
+                      .then(function () {
+    
+                        row.cells[1].textContent = EditNomVin;
+                        row.cells[5].textContent = EditCulture;
+                        row.cells[6].textContent = EditCommentaire;
+    
+                        displayMsg(false,true,false,code,row)
+    
+                        $("#editModal").modal("hide");
+                      })
+                      .catch(function (error) {
+                        alert("Ajax error: " + error);
+                      });     
+                    }              
           });
-        }
+         });
+       });
       }
+    }
 
-      function displayMsg(deleteRow, editRow,addedRow, row) {
+      function displayMsg(deleteRow, editRow,addedRow, row, rowObj = null) {
       
         if (deleteRow) {
     
-          Swal.fire('Hey &#128532; !', "<b>Vin numéro " +row+ " supprimé</b>", 'warning').then((result) => {
-            if (result.isConfirmed) {
-              location.reload();
-            }
-          });
+          Swal.fire('&#128532;', "<b>Vin numéro " +row+ " supprimé</b>", 'success');
     
         } else if (editRow) {
-    
-          Swal.fire('Hey &#129488; !', "<b>Vin numéro " +row+ " modifié</b>", 'info').then((result) => {
+          console.log(rowObj)
+          Swal.fire('Hey &#129488; !', "<b>Vin numéro " + row + " modifié</b>", 'info').then((result) => {
             if (result.isConfirmed) {
-              location.reload();
+              const rowElement = rowObj.closest('tr');
+              rowElement.classList.add('flash-animation');
+              setTimeout(() => {
+                rowElement.classList.remove('flash-animation');
+                location.reload()
+              }, 2000);
             }
           });
         }else if(addedRow){
-          Swal.fire('Hey &#128077; !', "<b>Vin numéro " +row+ " ajouté</b>", 'success').then((result) => {
-            if (result.isConfirmed) {
+          Swal.fire('&#128077;', "<b>Vin numéro " +row+ " ajouté. Cliquez sur la flèche bleue pour aller en bas.</b>", 'success').then((result) =>{
+            if(result.isConfirmed){
               location.reload();
             }
           });
         }
       }
       
-  
       function viewWine() {
         let btnVue = document.getElementsByClassName('view');
         for (let i = 0; i < btnVue.length; i++) {
@@ -412,6 +441,7 @@ window.addEventListener("load", () => {
       }
   
   }
+
   function searchWines() {
     const searchBarValue = $("#search").val();
     const rows = table.getElementsByClassName("data");
@@ -441,8 +471,9 @@ window.addEventListener("load", () => {
     }
   
     if (!matchesFound) {
-      Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour la vin numéro ' + searchBarValue + ' ...</b>', 'error');
+      Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour : " ' + searchBarValue + ' "...</b>', 'error');
     }
+  
   }
   
     const Input = document.getElementById("search");

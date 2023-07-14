@@ -100,23 +100,39 @@ window.addEventListener('load', () => {
             let row = this.parentNode.parentNode;
             let codePays = row.childNodes[0].textContent;
 
-            table.removeChild(row);
+            Swal.fire({
+              title :"&#128552;",
+              html: "<b>Vous êtes sûr de vouloir supprimer le pays numéro " + codePays + " ?</b>",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Oui',
+              cancelButtonText: 'Non'
+            }).then((result) => {
+              if (result.isConfirmed) {
 
-            let requestOptions = {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json"
-              }
-            };
+                table.removeChild(row);
 
-            fetch(urlApiPays + "/" + codePays, requestOptions)
-              .then((response) => response.json())
-              .then(function () {
-                displayMsg(true,false,false,codePays)
-              })
-              .catch(function (error) {
-                alert("Ajax error: " + error);
-              });
+                let requestOptions = {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json"
+                  }
+                };
+    
+                fetch(urlApiPays + "/" + codePays, requestOptions)
+                  .then((response) => response.json())
+                  .then(function () {
+                    displayMsg(true,false,false,codePays)
+                  })
+                  .catch(function (error) {
+                    alert("Ajax error: " + error);
+                  });
+
+               }        
+
+            });
+
+            
           });
         }
               /////////// MODIF //////////////
@@ -124,7 +140,9 @@ window.addEventListener('load', () => {
         let btnModif = document.getElementsByClassName('modif');
         for (let i = 0; i < btnModif.length; i++) {
           btnModif[i].addEventListener('click', function () {
+    
             const row = this.parentNode.parentNode;
+            const code = row.cells[0].textContent;
 
             $('.modal-NomPays').html("Editer Nom du pays");
 
@@ -134,36 +152,49 @@ window.addEventListener('load', () => {
      
             NomPaysInput.value = row.cells[1].textContent;
           
-
-            const code = row.cells[0].textContent;
-
             document.getElementById('saveChangesBtn').addEventListener('click', () => {
 
-              const newData = {
-                NOMPAYS: NomPaysInput.value.toUpperCase(),
-              };
+              Swal.fire({
+                html: "<b>Vous êtes sûr de vouloir modifier le pays " + code + " ?</b>",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Oui',
+                cancelButtonText: 'Non'
+              }).then((result) => {
+                if (result.isConfirmed) {  
 
-              let requestOptions = {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify(newData)
-              };
+                  const newData = {
+                    NOMPAYS: NomPaysInput.value.toUpperCase(),
+                  };
+    
+                  let requestOptions = {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newData)
+                  };
+    
+                  fetch(urlApiPays + "/" + code, requestOptions)
+                    .then((response) => response.json())
+                    .then(function () {
+                     displayMsg(false,true,false,code,row)
+                      row.cells[1].textContent = NomPaysInput.value.toUpperCase();
+                      $('#editModal').modal('hide');
+                    })
+                    .catch(function (error) {
+                      alert("Ajax error: " + error);
+                    });
 
-              fetch(urlApiPays + "/" + code, requestOptions)
-                .then((response) => response.json())
-                .then(function () {
-                 displayMsg(false,true,false,code)
-                  row.cells[1].textContent = NomPaysInput.value.toUpperCase();
-                  $('#editModal').modal('hide');
-                })
-                .catch(function (error) {
-                  alert("Ajax error: " + error);
-                });
+
+
+                } });
+
+             
             });
           });
         }
+
 
         let btnVue = document.getElementsByClassName('view');
         for (let i = 0; i < btnVue.length; i++) {
@@ -180,32 +211,31 @@ window.addEventListener('load', () => {
       });
   }
 
-
-  function displayMsg(deleteRow, editRow,addedRow, row) {  
+  function displayMsg(deleteRow, editRow,addedRow, row, rowObj = null) {
+      
     if (deleteRow) {
-
-      Swal.fire('Hey &#128532; !', "<b>Pays numéro " +row+ " supprimé</b>", 'warning').then((result) => {
-        if (result.isConfirmed) {
-          location.reload();
-        }
-      });
-
+  
+      Swal.fire('&#128532;', "<b>Région numéro " +row+ " supprimée</b>", 'success');
+  
     } else if (editRow) {
-
-      Swal.fire('Hey &#129488; !', "<b>Pays numéro " +row+ " modifié</b>", 'info').then((result) => {
-        if (result.isConfirmed) {
-          location.reload();
+      Swal.fire('Hey &#129488; !', "<b>Région numéro " + row + " modifiée</b>", 'info').then((result) => {
+        if (result.isConfirmed && rowObj) {
+          const rowElement = rowObj.closest('tr');
+          rowElement.classList.add('flash-animation');
+          setTimeout(() => {
+            rowElement.classList.remove('flash-animation');
+            location.reload()
+          }, 2000);
         }
       });
     }else if(addedRow){
-      Swal.fire('Hey &#128077; !', "<b>Pays numéro " +row+ " ajouté</b>", 'success').then((result) => {
-        if (result.isConfirmed) {
+      Swal.fire('&#128077;', "<b>Région numéro " +row+ " ajoutée. Cliquez sur la flèche bleue pour aller en bas.</b>", 'success').then((result) =>{
+        if(result.isConfirmed){
           location.reload();
         }
       });
     }
   }
-
 
 
           /////////// SEARCH //////////////
@@ -239,7 +269,7 @@ window.addEventListener('load', () => {
             }
           
             if (!matchesFound) {
-              Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour la vin numéro ' + searchBarValue + ' ...</b>', 'error');
+              Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour "' + searchBarValue + ' "...</b>', 'error');
             }
           }
 
@@ -254,10 +284,10 @@ window.addEventListener('load', () => {
             searchCountries(input);
           });
 
-  scrollDownButton.addEventListener('click', function() {
-    const bottomElement = document.documentElement;
-    bottomElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  });
+      scrollDownButton.addEventListener('click', function() {
+        const bottomElement = document.documentElement;
+        bottomElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+     });
 
   scrollTopButton.addEventListener('click', function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });

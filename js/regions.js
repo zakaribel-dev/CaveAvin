@@ -135,31 +135,50 @@ window.addEventListener("load", () => {
     // DELETE
 
     function deleteRegion(){
+
+
       let btnDelete = document.getElementsByClassName("delete");
-    
+
       for (let i = 0; i < btnDelete.length; i++) {
+           
         btnDelete[i].addEventListener("click", function () {
           let row = this.parentNode.parentNode;
           let codeRegion = row.childNodes[0].textContent;
-          console.log(codeRegion)
-  
-          table.removeChild(row);
-  
-          let requestOptions = {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          };
-  
-          fetch(urlApiRegion + "/" + codeRegion, requestOptions)
-            .then((response) => response.json())
-            .then(function () {
-              displayMsg(true,false,false,codeRegion)
-            })
-            .catch(function (error) {
-              alert("Ajax error: " + error);
-            });
+
+          Swal.fire({
+            title: '&#128552;',
+            html: "<b>Vous êtes sûr de vouloir supprimer la région numéro : " + codeRegion + " ?</b>",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Oui',
+            cancelButtonText: 'Non'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              
+      
+              table.removeChild(row);
+      
+              let requestOptions = {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              };
+      
+              fetch(urlApiRegion + "/" + codeRegion, requestOptions)
+                .then((response) => response.json())
+                .then(function () {
+                  displayMsg(true,false,false,codeRegion)
+                })
+                .catch(function (error) {
+                  alert("Ajax error: " + error);
+                });
+
+
+
+            } 
+          });
+         
         });
       }
     }
@@ -189,45 +208,56 @@ window.addEventListener("load", () => {
       for (let i = 0; i < btnModif.length; i++) {
         btnModif[i].addEventListener("click", function () {
           const row = this.parentNode.parentNode;
-  
+          const code = row.cells[0].textContent;
+
           $(".modal-NomPays").html("Editer Nom du pays");
           $(".modal-NomRegion").html("Editer Nom de la région");
 
-  
           $("#editModal").modal("show");
   
           const NomRegionInput = document.getElementById("modifRegion");
           NomRegionInput.value = row.cells[2].textContent;
   
-          const code = row.cells[0].textContent;
   
           document .getElementById("saveChangesBtnModifRegion").addEventListener("click", () => {
-              const select = document.getElementById("id_selectModif").value;
-              const EditNomRegionInput = document.getElementById("modifRegion").value;
 
-              const newData = {
-                CODEPAYS: select,
-                NOMREGION : EditNomRegionInput
-              };
+            Swal.fire({
+              html: "<b>Vous êtes sûr de vouloir modifier la région " + code + " ?</b>",
+              icon: 'info',
+              showCancelButton: true,
+              confirmButtonText: 'Oui',
+              cancelButtonText: 'Non'
+            }).then((result) => {
+              if (result.isConfirmed) {  
+
+                const select = document.getElementById("id_selectModif").value;
+                const EditNomRegionInput = document.getElementById("modifRegion").value;
   
-              let requestOptions = {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newData),
-              };
-  
-              fetch(urlApiRegion + "/" + code, requestOptions)
-                .then((response) => response.json())
-                .then(function () {
-                  displayMsg(false,true,false,code)
-                  row.cells[2].textContent = NomRegionInput.value;
-                  $("#editModal").modal("hide");
-                })
-                .catch(function (error) {
-                  alert("Ajax error: " + error);
-                });
+                const newData = {
+                  CODEPAYS: select,
+                  NOMREGION : EditNomRegionInput
+                };
+    
+                let requestOptions = {
+                  method: "PUT",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(newData),
+                };
+    
+                fetch(urlApiRegion + "/" + code, requestOptions)
+                  .then((response) => response.json())
+                  .then(function () {
+                    displayMsg(false,true,false,code,row)
+                    row.cells[2].textContent = NomRegionInput.value;
+                    $("#editModal").modal("hide");
+                  })
+                  .catch(function (error) {
+                    alert("Ajax error: " + error);
+                  });
+                
+              } });
             });
         });
       }
@@ -253,25 +283,26 @@ window.addEventListener("load", () => {
 
 }
 
-function displayMsg(deleteRow, editRow,addedRow, row) {  
+function displayMsg(deleteRow, editRow,addedRow, row, rowObj = null) {
+      
   if (deleteRow) {
 
-    Swal.fire('Hey &#128532; !', "<b>Région numéro " +row+ " supprimée</b>", 'warning').then((result) => {
-      if (result.isConfirmed) {
-        location.reload();
-      }
-    });
+    Swal.fire('&#128532;', "<b>Région numéro " +row+ " supprimée</b>", 'success');
 
   } else if (editRow) {
-
-    Swal.fire('Hey &#129488; !', "<b>Région numéro " +row+ " modifiée</b>", 'info').then((result) => {
-      if (result.isConfirmed) {
-        location.reload();
+    Swal.fire('Hey &#129488; !', "<b>Région numéro " + row + " modifiée</b>", 'info').then((result) => {
+      if (result.isConfirmed && rowObj) {
+        const rowElement = rowObj.closest('tr');
+        rowElement.classList.add('flash-animation');
+        setTimeout(() => {
+          rowElement.classList.remove('flash-animation');
+          location.reload()
+        }, 2000);
       }
     });
   }else if(addedRow){
-    Swal.fire('Hey &#128077; !', "<b>Région numéro " +row+ " ajoutée</b>", 'success').then((result) => {
-      if (result.isConfirmed) {
+    Swal.fire('&#128077;', "<b>Région numéro " +row+ " ajoutée. Cliquez sur la flèche bleue pour aller en bas.</b>", 'success').then((result) =>{
+      if(result.isConfirmed){
         location.reload();
       }
     });
@@ -307,8 +338,9 @@ function searchRegions() {
   }
 
   if (!matchesFound) {
-    Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour la vin numéro ' + searchBarValue + ' ...</b>', 'error');
+    Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour : " ' + searchBarValue + ' "...</b>', 'error');
   }
+
 }
 
 const Input = document.getElementById("search");

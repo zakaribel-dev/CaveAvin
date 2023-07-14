@@ -98,23 +98,35 @@ window.addEventListener('load', () => {
             let row = this.parentNode.parentNode;
             let codeAppellation = row.childNodes[0].textContent;
 
-            table.removeChild(row);
+            Swal.fire({
+              title: '&#128552;',
+              html: "<b>Vous êtes sûr de vouloir supprimer le vin " + codeAppellation + " ?</b>",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Oui',
+              cancelButtonText: 'Non'
+            }).then((result) => {
+              if (result.isConfirmed) {
 
-            let requestOptions = {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json"
-              }
-            };
+                table.removeChild(row);
 
-            fetch(urlApiAppellation + "/" + codeAppellation, requestOptions)
-              .then((response) => response.json())
-              .then(function () {
-                displayMsg(true,false,false,codeAppellation)
-              })
-              .catch(function (error) {
-                alert("Ajax error: " + error);
-              });
+                let requestOptions = {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json"
+                  }
+                };
+    
+                fetch(urlApiAppellation + "/" + codeAppellation, requestOptions)
+                  .then((response) => response.json())
+                  .then(function () {
+                    displayMsg(true,false,false,codeAppellation)
+                  })
+                  .catch(function (error) {
+                    alert("Ajax error: " + error);
+                  });
+
+               } });
           });
         }
               /////////// MODIF //////////////
@@ -123,6 +135,7 @@ window.addEventListener('load', () => {
         for (let i = 0; i < btnModif.length; i++) {
           btnModif[i].addEventListener('click', function () {
             const row = this.parentNode.parentNode;
+            const code = row.cells[0].textContent;
 
             $('.modal-AppellationModif').html("Editer Appellation");
 
@@ -133,33 +146,46 @@ window.addEventListener('load', () => {
             NomAppellationInput.value = row.cells[1].textContent;
           
 
-            const code = row.cells[0].textContent;
-
             document.getElementById('saveChangesBtnModifAppellation').addEventListener('click', () => {
 
-              const newData = {
-                NOMAPPELLATION: NomAppellationInput.value
-              };
+              Swal.fire({
+                title :"&#128552;",
+                html: "<b>Vous êtes sûr de vouloir modifier l'appellation numéro " + code + " ?</b>",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Oui',
+                cancelButtonText: 'Non'
+              }).then((result) => {
+                if (result.isConfirmed) { 
 
-              let requestOptions = {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify(newData)
-              };
+                  const newData = {
+                    NOMAPPELLATION: NomAppellationInput.value
+                  };
+    
+                  let requestOptions = {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newData)
+                  };
+    
+                  fetch(urlApiAppellation + "/" + code, requestOptions)
+                    .then((response) => response.json())
+                    .then(function () {
+                     displayMsg(false,true,code,row)
+                      row.cells[1].textContent =NomAppellationInput.value;
+                        $('#editModal').modal('hide');
+                        displayMsg(false,true,false,code,row)
+                    })
+                    .catch(function (error) {
+                      alert("Ajax error: " + error);
+                    });
 
-              fetch(urlApiAppellation + "/" + code, requestOptions)
-                .then((response) => response.json())
-                .then(function () {
-                 displayMsg(false,true,code)
-                  row.cells[1].textContent =NomAppellationInput.value;
-                    $('#editModal').modal('hide');
-                    displayMsg(false,true,false,code)
-                })
-                .catch(function (error) {
-                  alert("Ajax error: " + error);
-                });
+                 } 
+              
+              });
+      
             });
           });
         }
@@ -180,27 +206,26 @@ window.addEventListener('load', () => {
   }
 
 
-  function displayMsg(deleteRow, editRow,addedRow, row) {
-    msg.style.visibility = "visible";
-  
+  function displayMsg(deleteRow, editRow,addedRow, row, rowObj = null) {
+      
     if (deleteRow) {
-
-      Swal.fire('Hey &#128532; !', "<b>Couleur numéro " +row+ " supprimée</b>", 'warning').then((result) => {
-        if (result.isConfirmed) {
-          location.reload();
-        }
-      });
-
+  
+      Swal.fire('&#128532;', "<b>Appellation numéro " +row+ " supprimée</b>", 'success');
+  
     } else if (editRow) {
-
-      Swal.fire('Hey &#129488; !', "<b>Couleur numéro " +row+ " modifiée</b>", 'info').then((result) => {
-        if (result.isConfirmed) {
-          location.reload();
+      Swal.fire('Hey &#129488; !', "<b>Appellation numéro " + row + " modifiée</b>", 'info').then((result) => {
+        if (result.isConfirmed && rowObj) {
+          const rowElement = rowObj.closest('tr');
+          rowElement.classList.add('flash-animation');
+          setTimeout(() => {
+            rowElement.classList.remove('flash-animation');
+            location.reload()
+          }, 2000);
         }
       });
     }else if(addedRow){
-      Swal.fire('Hey &#128077; !', "<b>Couleur numéro " +row+ " ajoutée</b>", 'success').then((result) => {
-        if (result.isConfirmed) {
+      Swal.fire('&#128077;', "<b>Appellation numéro " +row+ " ajoutée. Cliquez sur la flèche bleue pour aller en bas.</b>", 'success').then((result) =>{
+        if(result.isConfirmed){
           location.reload();
         }
       });
@@ -240,7 +265,7 @@ window.addEventListener('load', () => {
             }
           
             if (!matchesFound) {
-              Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour la vin numéro ' + searchBarValue + ' ...</b>', 'error');
+              Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour "' + searchBarValue + '" ...</b>', 'error');
             }
           }
 

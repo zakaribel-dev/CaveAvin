@@ -94,25 +94,35 @@ window.addEventListener('load', () => {
         for (let i = 0; i < btnDelete.length; i++) {
           btnDelete[i].addEventListener('click', function () {
             let row = this.parentNode.parentNode;
-            let codePays = row.childNodes[0].textContent;
+            let codeCouleur = row.childNodes[0].textContent;
 
-            table.removeChild(row);
+            Swal.fire({
+              title :"&#128552;",
+              html: "<b>Vous êtes sûr de vouloir modifier la couleur numéro " + codeCouleur + " ?</b>",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Oui',
+              cancelButtonText: 'Non'
+            }).then((result) => {
+              if (result.isConfirmed) { 
+                table.removeChild(row);
 
-            let requestOptions = {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json"
-              }
-            };
-
-            fetch(urlApiCouleur + "/" + codePays, requestOptions)
-              .then((response) => response.json())
-              .then(function () {
-                displayMsg(true,false,false,codePays)
-              })
-              .catch(function (error) {
-                alert("Ajax error: " + error);
-              });
+                let requestOptions = {
+                  method: "DELETE",
+                  headers: {
+                    "Content-Type": "application/json"
+                  }
+                };
+    
+                fetch(urlApiCouleur + "/" + codeCouleur, requestOptions)
+                  .then((response) => response.json())
+                  .then(function () {
+                    displayMsg(true,false,false,codeCouleur)
+                  })
+                  .catch(function (error) {
+                    alert("Ajax error: " + error);
+                  });
+               } })
           });
         }
               /////////// MODIF //////////////
@@ -121,42 +131,50 @@ window.addEventListener('load', () => {
         for (let i = 0; i < btnModif.length; i++) {
           btnModif[i].addEventListener('click', function () {
             const row = this.parentNode.parentNode;
+            const code = row.cells[0].textContent;
 
             $('.modal-CouleurEdit').html("Editer Couleur");
 
             $('#editModal').modal('show');
 
             const ColorInput = document.getElementById('editCouleur');
-     
             ColorInput.value = row.cells[1].textContent;
-          
-
-            const code = row.cells[0].textContent;
-
+        
             document.getElementById('saveChangesBtn').addEventListener('click', () => {
 
-              const newData = {
-                NOMCOULEUR: ColorInput.value,
-              };
+              Swal.fire({
+                title :"&#128552;",
+                html: "<b>Vous êtes sûr de vouloir modifier l'appellation numéro " + code + " ?</b>",
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Oui',
+                cancelButtonText: 'Non'
+              }).then((result) => {
+                if (result.isConfirmed) { 
 
-              let requestOptions = {
-                method: "PUT",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify(newData)
-              };
-
-              fetch(urlApiCouleur + "/" + code, requestOptions)
-                .then((response) => response.json())
-                .then(function () {
-                 displayMsg(false,true,false,code)
-                  row.cells[1].textContent =  ColorInput.value.toUpperCase();
-                  $('#editModal').modal('hide');
-                })
-                .catch(function (error) {
-                  alert("Ajax error: " + error);
-                });
+                  const newData = {
+                    NOMCOULEUR: ColorInput.value,
+                  };
+    
+                  let requestOptions = {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(newData)
+                  };
+    
+                  fetch(urlApiCouleur + "/" + code, requestOptions)
+                    .then((response) => response.json())
+                    .then(function () {
+                     displayMsg(false,true,false,code,row)
+                      row.cells[1].textContent =  ColorInput.value.toUpperCase();
+                      $('#editModal').modal('hide');
+                    })
+                    .catch(function (error) {
+                      alert("Ajax error: " + error);
+                    });
+                 } });          
             });
           });
         }
@@ -176,28 +194,26 @@ window.addEventListener('load', () => {
       });
   }
 
-
-  function displayMsg(deleteRow, editRow,addedRow, row) {
-    msg.style.visibility = "visible";
-  
+  function displayMsg(deleteRow, editRow,addedRow, row, rowObj = null) {
+      
     if (deleteRow) {
-
-      Swal.fire('Hey &#128532; !', "<b>Couleur numéro " +row+ " supprimée</b>", 'warning').then((result) => {
-        if (result.isConfirmed) {
-          location.reload();
-        }
-      });
-
+  
+      Swal.fire('&#128532;', "<b>Appellation numéro " +row+ " supprimée</b>", 'success');
+  
     } else if (editRow) {
-
-      Swal.fire('Hey &#129488; !', "<b>Couleur numéro " +row+ " modifiée</b>", 'info').then((result) => {
-        if (result.isConfirmed) {
-          location.reload();
+      Swal.fire('Hey &#129488; !', "<b>Appellation numéro " + row + " modifiée</b>", 'info').then((result) => {
+        if (result.isConfirmed && rowObj) {
+          const rowElement = rowObj.closest('tr');
+          rowElement.classList.add('flash-animation');
+          setTimeout(() => {
+            rowElement.classList.remove('flash-animation');
+            location.reload()
+          }, 2000);
         }
       });
     }else if(addedRow){
-      Swal.fire('Hey &#128077; !', "<b>Couleur numéro " +row+ " ajoutée</b>", 'success').then((result) => {
-        if (result.isConfirmed) {
+      Swal.fire('&#128077;', "<b>Appellation numéro " +row+ " ajoutée. Cliquez sur la flèche bleue pour aller en bas.</b>", 'success').then((result) =>{
+        if(result.isConfirmed){
           location.reload();
         }
       });
