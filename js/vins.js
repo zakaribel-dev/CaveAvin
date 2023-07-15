@@ -2,7 +2,7 @@ window.addEventListener("load", () => {
     const table = document.getElementById("table_id");
     table.className = "table table-dark table-hover container mt-5 text-center";
     const limit = 10;
-
+    const msg = document.getElementById('msg');
     let wines = [];
     
     function getWines(urlApiVins) {
@@ -446,6 +446,7 @@ window.addEventListener("load", () => {
     const searchBarValue = $("#search").val();
     const rows = table.getElementsByClassName("data");
     let matchesFound = false; // flag
+    msg.innerHTML ="";
   
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
@@ -471,8 +472,8 @@ window.addEventListener("load", () => {
     }
   
     if (!matchesFound) {
-      Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour : " ' + searchBarValue + ' "...</b>', 'error');
-    }
+      msg.innerHTML = "<b>Aucune correspondance pour : " +searchBarValue+ " &#128532</b>";
+    } 
   
   }
   

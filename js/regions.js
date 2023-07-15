@@ -314,6 +314,7 @@ function searchRegions() {
   const searchBarValue = $("#search").val();
   const rows = table.getElementsByClassName("data");
   let matchesFound = false; // flag
+  msg.innerHTML ="";
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
@@ -339,8 +340,8 @@ function searchRegions() {
   }
 
   if (!matchesFound) {
-    Swal.fire('Désolé &#128532;', '<b>Aucune correspondance pour : " ' + searchBarValue + ' "...</b>', 'error');
-  }
+    msg.innerHTML = "<b>Aucune correspondance pour : " +searchBarValue+ " &#128532</b>";
+  } 
 
 }
 
