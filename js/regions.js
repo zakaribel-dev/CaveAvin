@@ -1,6 +1,6 @@
 window.addEventListener("load", () => {
   const table = document.getElementById("table_id");
-  table.className = "table table-dark table-hover container mt-5 text-center";
+  table.className = "table table-danger table-hover container mt-5 text-center";
   const msg = document.getElementById("msg");
   const limit = 10;
 
@@ -315,6 +315,9 @@ function searchRegions() {
   const rows = table.getElementsByClassName("data");
   let matchesFound = false; // flag
   msg.innerHTML ="";
+  table.style.visibility = "visible";
+  scrollDownButton.style.visibility = "visible";
+  scrollTopButton.style.visibility = "visible";
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
@@ -340,6 +343,10 @@ function searchRegions() {
   }
 
   if (!matchesFound) {
+
+    table.style.visibility = "hidden";
+    scrollDownButton.style.visibility = "hidden";
+    scrollTopButton.style.visibility = "hidden";
     msg.innerHTML = "<b>Aucune correspondance pour : " +searchBarValue+ " &#128532</b>";
   } 
 

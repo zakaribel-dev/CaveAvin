@@ -10,13 +10,17 @@
   }
 
   body {
-	background-color: #92A8D1;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    color: #333333;
 		padding-top: 70px; 
 }
-
-
+.all_imgs{
+  text-align: center !important;
+  border-radius: 10px !important;
+}
 h1, h2, h3 {
-	color: rgb(153, 57, 57)
+	color:#8b0000;
 }
 
 p {
@@ -27,15 +31,39 @@ a {
   color: #a17a53;
 }
 
-#scrollButton {
-  background-color: #34568B;
-  margin-left: 86%;
+th{
+  font-size: larger;
 }
 
-  #scrollTopButton {
-    font-weight: bolder;
-    background-color: #34568B;
-    margin-left: 97%;
+
+.btn {
+  border: none; /* Suppression de la bordure */
+  border-radius: 5px; /* Arrondi des coins */
+}
+
+
+.btn:hover {
+  background-color: #16416b; 
+}
+
+#scrollButton {
+  background-color: #8b0000;
+  color: white;
+  font-weight: bolder;
+  border-radius: 4px;
+  margin-left: 86%;
+  width: 70px;
+  height: 50px;
+}
+
+#scrollTopButton {
+  background-color: #8b0000;
+  color: white;
+  font-weight: bolder;
+  border-radius: 4px;
+  margin-left: 87%;
+  width: 70px;
+  height: 50px;
 }
 
 
@@ -55,19 +83,34 @@ a {
 }
 
 #new_wine {
-  background-color: #34568B !important;
+  background-color: #8b0000;
+  color: white;
+  font-weight: bolder;
+  border-radius: 4px;
 }
 #new_region {
-  background-color: #34568B !important;
+  background-color: #8b0000;
+  color: white;
+  font-weight: bolder;
+  border-radius: 4px;
 }
 #new_country {
-  background-color: #34568B !important;
+  background-color: #8b0000;
+  color: white;
+  font-weight: bolder;
+  border-radius: 4px;
 }
 #new_color {
-  background-color: #34568B !important;
+  background-color: #8b0000;
+  color: white;
+  font-weight: bolder;
+  border-radius: 4px;
 }
 #new_appellation {
-  background-color: #34568B !important;
+  background-color: #8b0000;
+  color: white;
+  font-weight: bolder;
+  border-radius: 4px;
 }
 .vin-button:hover {
   background-color: #aa1f33;
@@ -77,19 +120,10 @@ a {
   background-color: #75141f;
 }
 .vin-input {
-  padding: 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 4px;
-}
-
-.vin-input:hover {
-  border: 1px solid #8c1725;
-}
-
-.vin-input:focus {
-  border: 1px solid #aa1f33;
-  outline: none;
+  border: 2px solid #8b0000;
+  border-radius: 5px; 
+  background-color: #ffffff; 
+  color: #333333;
 }
 
 @keyframes flash {

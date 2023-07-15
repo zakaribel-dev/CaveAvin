@@ -1,6 +1,6 @@
 window.addEventListener("load", () => {
     const table = document.getElementById("table_id");
-    table.className = "table table-dark table-hover container mt-5 text-center";
+    table.className = "table table-danger table-hover container mt-5 text-center";
     const limit = 10;
     const msg = document.getElementById('msg');
     let wines = [];
@@ -447,6 +447,9 @@ window.addEventListener("load", () => {
     const rows = table.getElementsByClassName("data");
     let matchesFound = false; // flag
     msg.innerHTML ="";
+    table.style.visibility = "visible";
+    scrollDownButton.style.visibility = "visible";
+    scrollTopButton.style.visibility = "visible";
   
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
@@ -472,6 +475,10 @@ window.addEventListener("load", () => {
     }
   
     if (!matchesFound) {
+
+      table.style.visibility = "hidden";
+      scrollDownButton.style.visibility = "hidden";
+      scrollTopButton.style.visibility = "hidden";
       msg.innerHTML = "<b>Aucune correspondance pour : " +searchBarValue+ " &#128532</b>";
     } 
   
