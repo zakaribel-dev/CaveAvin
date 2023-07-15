@@ -132,8 +132,7 @@ window.addEventListener("load", () => {
     });
 
 
-    // DELETE
-
+    // DELETE  
     function deleteRegion(){
 
 
@@ -147,7 +146,7 @@ window.addEventListener("load", () => {
 
           Swal.fire({
             title: '&#128552;',
-            html: "<b>Vous êtes sûr de vouloir supprimer la région numéro : " + codeRegion + " ?</b>",
+            html: "<b>Vous êtes sûr de vouloir supprimer la région numéro " + codeRegion + " ?</b>",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Oui',
@@ -302,7 +301,7 @@ function displayMsg(deleteRow, editRow,addedRow, row, rowObj = null) {
       }
     });
   }else if(addedRow){
-    Swal.fire('&#128077;', "<b>Région numéro " +row+ " ajoutée. Cliquez sur la flèche bleue pour aller en bas.</b>", 'success').then((result) =>{
+    Swal.fire('&#128077;', "<b>Région numéro " +row+ " ajoutée. Cliquez sur la flèche pour aller en bas.</b>", 'success').then((result) =>{
       if(result.isConfirmed){
         location.reload();
       }

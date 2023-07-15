@@ -224,7 +224,7 @@ window.addEventListener('load', () => {
         }
       });
     }else if(addedRow){
-      Swal.fire('&#128077;', "<b>Appellation numéro " +row+ " ajoutée. Cliquez sur la flèche bleue pour aller en bas.</b>", 'success').then((result) =>{
+      Swal.fire('&#128077;', "<b>Appellation numéro " +row+ " ajoutée. Cliquez sur la flèche pour aller en bas.</b>", 'success').then((result) =>{
         if(result.isConfirmed){
           location.reload();
         }
