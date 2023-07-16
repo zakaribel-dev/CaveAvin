@@ -1,6 +1,6 @@
 window.addEventListener("load", () => {
     const table = document.getElementById("table_id");
-    table.className = "table table-danger table-hover container mt-5 text-center";
+    table.className = "table table-danger table-hover container mt-5 text-center  ";
     const limit = 10;
     const msg = document.getElementById('msg');
     let wines = [];
@@ -130,7 +130,7 @@ window.addEventListener("load", () => {
       //DISPLAY // 
    
       function display(){
-  
+
         wines.VIN.map(function (vinElement) {
           let tr = document.createElement("tr");
           tr.setAttribute('class','data');
@@ -501,6 +501,7 @@ window.addEventListener("load", () => {
     scrollTopButton.addEventListener('click', function() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
   
     getWines(urlApiVins)
   });
