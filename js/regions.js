@@ -85,8 +85,8 @@ window.addEventListener("load", () => {
         for (let i = 0; i < data.PAYS.records.length; i++) {
 
           let code_option_generated = document.createElement("option");
-          code_option_generated.value = data.PAYS.records[i][0];
-          code_option_generated.innerText = data.PAYS.records[i][1];
+          code_option_generated.value = data.PAYS.records[i][0]; // tout les code pays (donc l'index 0 par rapport à la structure de l'api pays)
+          code_option_generated.innerText = data.PAYS.records[i][1]; //tout les noms de pays (donc l'index 1 par rapport à la structure de l'api pays)
           code_select_generated.appendChild(code_option_generated);
         }
         combo.appendChild(code_select_generated);

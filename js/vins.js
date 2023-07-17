@@ -29,44 +29,61 @@ window.addEventListener("load", () => {
 
   
       /////////// ADD ///////////
-  
-      fetch(urlApiVins + "?include=COULEUR,REGION,APPELLATION&transform=1", requestOptions)
-        .then((response) => response.json())
-        .then(function (data) {
-          const code_select_generated_Appellation = document.createElement("select");
-          code_select_generated_Appellation.setAttribute("id", "id_selectAppellation");
-          const code_select_generated_color = document.createElement("select");
-          code_select_generated_color.setAttribute("id", "id_selectColor");
-          const code_select_generated_region = document.createElement("select");
-          code_select_generated_region.setAttribute("id", "id_selectRegion");
 
-          const comboAppellation = document.getElementById("comboVin"); 
-          const comboColor = document.getElementById("comboColor");  
-          const comboRegion = document.getElementById("comboRegion");    
-   
-          for (let i = 0; i < data.VIN.length; i++) {
-            // Combo box des appellations
-            let code_option_generated_Appellation = document.createElement("option");
-            code_option_generated_Appellation.value = data.VIN[i].APPELLATION[0].CODEAPPELLATION;
-            code_option_generated_Appellation.innerText = data.VIN[i].APPELLATION[0].NOMAPPELLATION;
-            code_select_generated_Appellation.appendChild(code_option_generated_Appellation);
-            comboAppellation.appendChild(code_select_generated_Appellation);
-          
-            // Combo box des couleurs
-            let code_option_generated_color = document.createElement("option");
-            code_option_generated_color.value = data.VIN[i].COULEUR[0].CODECOULEUR;
-            code_option_generated_color.innerText = data.VIN[i].COULEUR[0].NOMCOULEUR;
-            code_select_generated_color.appendChild(code_option_generated_color);
-            comboColor.appendChild(code_select_generated_color);
-          
-            // Combo box des régions
-            let code_option_generated_region = document.createElement("option");
-            code_option_generated_region.value = data.VIN[i].REGION[0].CODEREGION;
-            code_option_generated_region.innerText = data.VIN[i].REGION[0].NOMREGION;
-            code_select_generated_region.appendChild(code_option_generated_region);
-            comboRegion.appendChild(code_select_generated_region);
-          }
+
+      const code_select_generated_Appellation = document.createElement("select");
+      code_select_generated_Appellation.setAttribute("id", "id_selectAppellation");
+      const code_select_generated_color = document.createElement("select");
+      code_select_generated_color.setAttribute("id", "id_selectColor");
+      const code_select_generated_region = document.createElement("select");
+      code_select_generated_region.setAttribute("id", "id_selectRegion");
+
+
+      // combo des appellations
+      fetch(urlApiAppellation, requestOptions)
+      .then((response) => response.json())
+      .then(function (data) {
+        const comboAppellation = document.getElementById("comboAppellation");
+    
+        data.APPELLATION.records.forEach((app) => {
+
+          const code_option_generated_Appellation = document.createElement("option");
+          code_option_generated_Appellation.value = app[0];
+          code_option_generated_Appellation.innerText = app[1];
+          code_select_generated_Appellation.appendChild(code_option_generated_Appellation);
+          comboAppellation.appendChild(code_select_generated_Appellation);
         });
+      });
+    
+    // combo des couleurs
+    fetch(urlApiCouleur, requestOptions)
+      .then((response) => response.json())
+      .then(function (data) {
+        const comboColor = document.getElementById("comboColor");
+    
+        data.COULEUR.records.forEach((couleur) => {
+          const code_option_generated_color = document.createElement("option");
+          code_option_generated_color.value = couleur[0];
+          code_option_generated_color.innerText = couleur[1];
+          code_select_generated_color.appendChild(code_option_generated_color);
+          comboColor.appendChild(code_select_generated_color);
+        });
+      });
+    
+    // combo des regions
+    fetch(urlApiRegion, requestOptions)
+      .then((response) => response.json())
+      .then(function (data) {
+        const comboRegion = document.getElementById("comboRegion");
+    
+        data.REGION.records.forEach((vin) => {
+          const code_option_generated_region = document.createElement("option");
+          code_option_generated_region.value = vin[0];
+          code_option_generated_region.innerText = vin[2];
+          code_select_generated_region.appendChild(code_option_generated_region);
+          comboRegion.appendChild(code_select_generated_region);
+        });
+      });
   
 
        
@@ -264,9 +281,7 @@ window.addEventListener("load", () => {
   
       function editWine(){
   
-        fetch(urlApiVins + "?include=COULEUR,REGION,APPELLATION&transform=1", requestOptions)
-        .then((response) => response.json())
-        .then(function (data) {
+
           const code_select_generated_Appellation = document.createElement("select");
           code_select_generated_Appellation.setAttribute("id", "id_selectEditAppellation");
           const code_select_generated_color = document.createElement("select");
@@ -274,35 +289,52 @@ window.addEventListener("load", () => {
           const code_select_generated_region = document.createElement("select");
           code_select_generated_region.setAttribute("id", "id_selectEditRegion");
 
-          const comboAppellation = document.getElementById("comboModifAppellation"); 
-          const comboColor = document.getElementById("comboEditColor");  
-          const comboRegion = document.getElementById("comboEditRegion");    
-   
-          for (let i = 0; i < data.VIN.length; i++) {
 
-            // Combbox des appellations
-            let code_option_generated_Appellation = document.createElement("option");
-            code_option_generated_Appellation.value = data.VIN[i].APPELLATION[0].CODEAPPELLATION;
-            code_option_generated_Appellation.innerText = data.VIN[i].APPELLATION[0].NOMAPPELLATION;
-            code_select_generated_Appellation.appendChild(code_option_generated_Appellation);
-            comboAppellation.appendChild(code_select_generated_Appellation);
-          
-            // Combobox des couleurs
-            let code_option_generated_color = document.createElement("option");
-            code_option_generated_color.value = data.VIN[i].COULEUR[0].CODECOULEUR;
-            code_option_generated_color.innerText = data.VIN[i].COULEUR[0].NOMCOULEUR;
-            code_select_generated_color.appendChild(code_option_generated_color);
-            comboColor.appendChild(code_select_generated_color);
-          
-            // Combobox des régions
-            let code_option_generated_region = document.createElement("option");
-            code_option_generated_region.value = data.VIN[i].REGION[0].CODEREGION;
-            code_option_generated_region.innerText = data.VIN[i].REGION[0].NOMREGION;
-            code_select_generated_region.appendChild(code_option_generated_region);
-            comboRegion.appendChild(code_select_generated_region);
-          }
+              // combo des appellations
+      fetch(urlApiAppellation, requestOptions)
+      .then((response) => response.json())
+      .then(function (data) {
+        const comboAppellation = document.getElementById("comboModifAppellation");
+        
+        data.APPELLATION.records.forEach((app) => {
+
+          const code_option_generated_Appellation = document.createElement("option");
+          code_option_generated_Appellation.value = app[0];
+          code_option_generated_Appellation.innerText = app[1];
+          code_select_generated_Appellation.appendChild(code_option_generated_Appellation);
+          comboAppellation.appendChild(code_select_generated_Appellation);
         });
-
+      });
+    
+    // combo des couleurs
+    fetch(urlApiCouleur, requestOptions)
+      .then((response) => response.json())
+      .then(function (data) {
+        const comboColor = document.getElementById("comboEditColor");
+    
+        data.COULEUR.records.forEach((couleur) => {
+          const code_option_generated_color = document.createElement("option");
+          code_option_generated_color.value = couleur[0];
+          code_option_generated_color.innerText = couleur[1];
+          code_select_generated_color.appendChild(code_option_generated_color);
+          comboColor.appendChild(code_select_generated_color);
+        });
+      });
+    
+    // combo des regions
+    fetch(urlApiRegion, requestOptions)
+      .then((response) => response.json())
+      .then(function (data) {
+        const comboRegion = document.getElementById("comboEditRegion");
+    
+        data.REGION.records.forEach((vin) => {
+          const code_option_generated_region = document.createElement("option");
+          code_option_generated_region.value = vin[0];
+          code_option_generated_region.innerText = vin[2];
+          code_select_generated_region.appendChild(code_option_generated_region);
+          comboRegion.appendChild(code_select_generated_region);
+        });
+      });
        
         let btnModif = document.getElementsByClassName("modif");
         for (let i = 0; i < btnModif.length; i++) {
