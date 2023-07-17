@@ -58,6 +58,7 @@ window.addEventListener('load', () => {
           $('#addModal').modal('show');
 
           document.getElementById('saveChangesBtnAdd').addEventListener('click', () => {
+
             const AddColorInput = document.getElementById('addColor');
            
 
