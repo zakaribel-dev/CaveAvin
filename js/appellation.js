@@ -92,43 +92,45 @@ window.addEventListener('load', () => {
         });
               /////////// DELETE //////////////
 
-        let btnDelete = document.getElementsByClassName('delete');
-        for (let i = 0; i < btnDelete.length; i++) {
-          btnDelete[i].addEventListener('click', function () {
-            let row = this.parentNode.parentNode;
-            let codeAppellation = row.childNodes[0].textContent;
-
-            Swal.fire({
-              title: '&#128552;',
-              html: "<b>Vous êtes sûr de vouloir supprimer le vin " + codeAppellation + " ?</b>",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Oui',
-              cancelButtonText: 'Non'
-            }).then((result) => {
-              if (result.isConfirmed) {
-
-                table.removeChild(row);
-
-                let requestOptions = {
-                  method: "DELETE",
-                  headers: {
-                    "Content-Type": "application/json"
-                  }
-                };
-    
-                fetch(urlApiAppellation + "/" + codeAppellation, requestOptions)
-                  .then((response) => response.json())
-                  .then(function () {
-                    displayMsg(true,false,false,codeAppellation)
-                  })
-                  .catch(function (error) {
-                    alert("Ajax error: " + error);
+              let btnDelete = document.getElementsByClassName('delete');
+              for (let i = 0; i < btnDelete.length; i++) {
+                btnDelete[i].addEventListener('click', function () {
+                  let row = this.parentNode.parentNode;
+                  const codeAppellation = row.childNodes[0].textContent;
+      
+                  Swal.fire({
+                    title :"&#128552;",
+                    html: "<b>Vous êtes sûr de vouloir supprimer l'appellation numéro " + codeAppellation + " ?</b>",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Oui',
+                    cancelButtonText: 'Non'
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+      
+                      table.removeChild(row);
+      
+                      let requestOptions = {
+                        method: "DELETE",
+                        headers: {
+                          "Content-Type": "application/json"
+                        }
+                      };
+          
+                      fetch(urlApiAppellation + "/" + codeAppellation, requestOptions)
+                        .then((response) => response.json())
+                        .then(function () {
+                          displayMsg(true,false,false,codeAppellation)
+                        })
+                        .catch(function (error) {
+                          alert("Ajax error: " + error);
+                        });
+      
+                     }        
                   });
+               });
+              }
 
-               } });
-          });
-        }
               /////////// MODIF //////////////
 
         let btnModif = document.getElementsByClassName('modif');

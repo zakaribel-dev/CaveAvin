@@ -71,7 +71,7 @@ window.addEventListener("load", () => {
 
        
       document.getElementById("new_wine").addEventListener("click", () => {
-        $(".modal-addNomVin").html("Nom du vin");
+        $(".modal-addNomAppellation").html("Appellation");
         $(".modal-addNomCouleur").html("Couleur");
         $(".modal-addNomRegion").html("Région");
         $(".modal-addNomVin").html("Nom du vin");

@@ -129,11 +129,8 @@ window.addEventListener('load', () => {
                   });
 
                }        
-
             });
-
-            
-          });
+         });
         }
               /////////// MODIF //////////////
 

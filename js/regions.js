@@ -21,7 +21,7 @@ window.addEventListener("load", () => {
 
           let paysTd = document.createElement("td");
           if (regionElement.PAYS.length <= 0) {
-            paysTd.textContent = "France";
+            paysTd.textContent = "aucun pays trouvé......";
           } else {
             paysTd.textContent = regionElement.PAYS[0].NOMPAYS;
           }
