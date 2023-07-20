@@ -276,14 +276,15 @@ window.addEventListener('load', () => {
             searchColors(input);
           });
 
-  scrollDownButton.addEventListener('click', function() {
-    const bottomElement = document.documentElement;
-    bottomElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  });
-
-  scrollTopButton.addEventListener('click', function() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }); 
+          scrollDownButton.addEventListener('click', function() {
+            const full_page = document.documentElement; // document.documentElement represente toute ma page 
+            full_page.scrollIntoView({ behavior: 'smooth', block: 'end' }); // j'utilise la fonction scrollIntoView qui me permet d'aller en bas de la page de manière 'smooth'
+          });
+        
+          scrollTopButton.addEventListener('click', function() {
+            const topElement = document.body; // ici document.body represente l'élément le plus haut de la page alors je demande simplement à ma foncttion scrollintoview d"y scroller 
+        
+            topElement.scrollIntoView({ behavior: 'smooth' });  }); 
 
   getColors(urlApiCouleur);
 });

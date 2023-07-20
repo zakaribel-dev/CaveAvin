@@ -15,13 +15,13 @@ window.addEventListener("load", () => {
       .then(function (data) {
         data.REGION.map(function (regionElement) {
           let tr = document.createElement("tr");
-          tr.setAttribute('class','data');
+          tr.setAttribute('class','data'); // je met une classe data à toute mes lignes dans le but de pouvoir en afficher certaines et d'en cachet d'autres tout en évitant de filtrer la tr contenant mes th
           let codeRegionTd = document.createElement("td");
           codeRegionTd.textContent = regionElement.CODEREGION;
 
           let paysTd = document.createElement("td");
           if (regionElement.PAYS.length <= 0) {
-            paysTd.textContent = "aucun pays trouvé......";
+            paysTd.textContent = "aucun pays trouvé......"; 
           } else {
             paysTd.textContent = regionElement.PAYS[0].NOMPAYS;
           }
@@ -352,6 +352,7 @@ function searchRegions() {
 }
 
 const Input = document.getElementById("search");
+
 const scrollDownButton = document.getElementById('scrollButton');
 const scrollTopButton = document.getElementById('scrollTopButton');
 
@@ -362,13 +363,14 @@ Input.addEventListener("input", (event) => {
 
   
   scrollDownButton.addEventListener('click', function() {
-    const bottomElement = document.documentElement;
-    bottomElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    const full_page = document.documentElement; // document.documentElement represente toute ma page 
+    full_page.scrollIntoView({ behavior: 'smooth', block: 'end' }); // j'utilise la fonction scrollIntoView qui me permet d'aller en bas de la page de manière 'smooth'
   });
 
   scrollTopButton.addEventListener('click', function() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }); 
+    const topElement = document.body; // ici document.body represente l'élément le plus haut de la page alors je demande simplement à ma foncttion scrollintoview d"y scroller 
+
+    topElement.scrollIntoView({ behavior: 'smooth' });  }); 
 
   getRegions(urlApiRegion);
 });
