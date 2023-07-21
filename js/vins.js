@@ -5,7 +5,7 @@ window.addEventListener("load", () => {
     const msg = document.getElementById('msg');
     let wines = [];
     
-    function getWines(urlApiVins) {
+    function manageWines(urlApiVins) {
         let requestOptions = {
             method: "GET",
             redirect: "follow",
@@ -150,7 +150,7 @@ window.addEventListener("load", () => {
 
         wines.VIN.map(function (vinElement) {
           let tr = document.createElement("tr");
-          tr.setAttribute('class','data');
+          tr.setAttribute('class','data');// je met une classe data à toute mes lignes dans le but de pouvoir en afficher certaines et d'en cacher d'autres tout en évitant de filtrer la tr contenant mes th
   
           let codeVinTd = document.createElement("td");
           codeVinTd.textContent = vinElement.CODEVIN;
@@ -494,7 +494,7 @@ window.addEventListener("load", () => {
         if (cellValue.includes(searchBarValue.toLowerCase())) { // ici, si un l'input match avec les l'une des cellules de toute les row 
           //alors j'active le flag pour dire qu'il ya un match
           rowMatches = true;
-          break;
+          break;  
         }
       }
   
@@ -517,14 +517,17 @@ window.addEventListener("load", () => {
   }
   
     const Input = document.getElementById("search");
-    const scrollDownButton = document.getElementById('scrollButton');
-    const scrollTopButton = document.getElementById('scrollTopButton');
+
   
     Input.addEventListener("input", (event) => {
       event.preventDefault();
       searchWines();
     });
-    
+
+    const scrollDownButton = document.getElementById('scrollButton');
+    const scrollTopButton = document.getElementById('scrollTopButton');
+
+
     scrollDownButton.addEventListener('click', function() {
       const full_page = document.documentElement; // document.documentElement represente toute ma page 
       full_page.scrollIntoView({ behavior: 'smooth', block: 'end' }); // j'utilise la fonction scrollIntoView qui me permet d'aller en bas de la page de manière 'smooth'
@@ -533,9 +536,10 @@ window.addEventListener("load", () => {
     scrollTopButton.addEventListener('click', function() {
       const topElement = document.body; // ici document.body represente l'élément le plus haut de la page alors je demande simplement à ma foncttion scrollintoview d"y scroller 
   
-      topElement.scrollIntoView({ behavior: 'smooth' });  }); 
+      topElement.scrollIntoView({ behavior: 'smooth' }); 
+     }); 
 
   
-    getWines(urlApiVins)
+     manageWines(urlApiVins)
   });
   

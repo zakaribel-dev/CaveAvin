@@ -4,7 +4,7 @@ window.addEventListener('load', () => {
   const msg = document.getElementById('msg');
   const limit = 10;
 
-  function getColors(urlApiCouleur) {
+  function manageColors(urlApiCouleur) {
     let requestOptions = {
       method: "GET",
       redirect: "follow",
@@ -284,7 +284,9 @@ window.addEventListener('load', () => {
           scrollTopButton.addEventListener('click', function() {
             const topElement = document.body; // ici document.body represente l'élément le plus haut de la page alors je demande simplement à ma foncttion scrollintoview d"y scroller 
         
-            topElement.scrollIntoView({ behavior: 'smooth' });  }); 
+            topElement.scrollIntoView({ behavior: 'smooth' }); 
+          
+          }); 
 
-  getColors(urlApiCouleur);
+  manageColors(urlApiCouleur);
 });
