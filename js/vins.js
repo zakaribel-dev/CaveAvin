@@ -1,22 +1,26 @@
 window.addEventListener("load", () => {
     const table = document.getElementById("table_id");
-    table.className = "table table-danger table-hover container mt-5 text-center  ";
+    table.className = "table table-danger table-hover container mt-5 text-center";
+
     const limit = 10;
     const msg = document.getElementById('msg');
     let wines = [];
     
+    const requestOptionsGet = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    
     function manageWines(urlApiVins) {
-        let requestOptions = {
-            method: "GET",
-            redirect: "follow",
-          };
         
-          fetch(urlApiVins + "?include=COULEUR,REGION,APPELLATION&transform=1", requestOptions)
+          fetch(urlApiVins + "?include=COULEUR,REGION,APPELLATION&transform=1", requestOptionsGet)
             .then((response) => response.json())
             .then(function (data) {
               wines = data;
 
               display();
+              addWine();
               deleteWine();
               editWine();
               viewWine();
@@ -25,124 +29,127 @@ window.addEventListener("load", () => {
               console.log("Une erreur s'est produite lors de la récupération des données :", error);
             });
 
-
-
+          }
   
       /////////// ADD ///////////
+      function addWine(){
 
-            
-      const code_select_generated_Appellation = document.createElement("select");
-      code_select_generated_Appellation.setAttribute("id", "id_selectAppellation");
-      const code_select_generated_color = document.createElement("select");
-      code_select_generated_color.setAttribute("id", "id_selectColor");
-      const code_select_generated_region = document.createElement("select");
-      code_select_generated_region.setAttribute("id", "id_selectRegion");
-
-
-      // combo des appellations
-      fetch(urlApiAppellation, requestOptions)
-      .then((response) => response.json())
-      .then(function (data) {
-        const comboAppellation = document.getElementById("comboAppellation");
-    
-        data.APPELLATION.records.forEach((app) => {
-
-          const code_option_generated_Appellation = document.createElement("option");
-          code_option_generated_Appellation.value = app[0];
-          code_option_generated_Appellation.innerText = app[1];
-          code_select_generated_Appellation.appendChild(code_option_generated_Appellation);
-          comboAppellation.appendChild(code_select_generated_Appellation);
-        });
-      });
-    
-    // combo des couleurs
-    fetch(urlApiCouleur, requestOptions)
-      .then((response) => response.json())
-      .then(function (data) {
-        const comboColor = document.getElementById("comboColor");
-    
-        data.COULEUR.records.forEach((couleur) => {
-          const code_option_generated_color = document.createElement("option");
-          code_option_generated_color.value = couleur[0];
-          code_option_generated_color.innerText = couleur[1];
-          code_select_generated_color.appendChild(code_option_generated_color);
-          comboColor.appendChild(code_select_generated_color);
-        });
-      });
-    
-    // combo des regions
-    fetch(urlApiRegion, requestOptions)
-      .then((response) => response.json())
-      .then(function (data) {
-        const comboRegion = document.getElementById("comboRegion");
-    
-        data.REGION.records.forEach((vin) => {
-          const code_option_generated_region = document.createElement("option");
-          code_option_generated_region.value = vin[0];
-          code_option_generated_region.innerText = vin[2];
-          code_select_generated_region.appendChild(code_option_generated_region);
-          comboRegion.appendChild(code_select_generated_region);
-        });
-      });
+     
+        const code_select_generated_Appellation = document.createElement("select");
+        code_select_generated_Appellation.setAttribute("id", "id_selectAppellation");
+        const code_select_generated_color = document.createElement("select");
+        code_select_generated_color.setAttribute("id", "id_selectColor");
+        const code_select_generated_region = document.createElement("select");
+        code_select_generated_region.setAttribute("id", "id_selectRegion");
   
-
-       
-      document.getElementById("new_wine").addEventListener("click", () => {
-        $(".modal-addNomAppellation").html("Appellation");
-        $(".modal-addNomCouleur").html("Couleur");
-        $(".modal-addNomRegion").html("Région");
-        $(".modal-addNomVin").html("Nom du vin");
-        $(".modal-addCulture").html("Culture");
-        $(".modal-addCommentaire").html("Commentaires");
-
   
-        $("#addModal").modal("show");
+        // combo des appellations
+        fetch(urlApiAppellation, requestOptionsGet)
+        .then((response) => response.json())
+        .then(function (data) {
+          const comboAppellation = document.getElementById("comboAppellation");
+      
+          data.APPELLATION.records.forEach((app) => {
   
-        document.getElementById("saveChangesBtnAdd").addEventListener("click", () => {
-            const AddNomVin =document.getElementById("nomVin").value;
-            const AddCulture =document.getElementById("culture").value;
-            const AddCommentaire =document.getElementById("commentaire").value;
-
-            const selectAppellation = document.getElementById("id_selectAppellation").value;
-            const selectColor = document.getElementById("id_selectColor").value;
-            const selectRegion = document.getElementById("id_selectRegion").value;
-
-            console.log(selectAppellation);
-
-            if (AddNomVin.length === 0 || AddCulture.length === 0 || AddCommentaire.length === 0) {
-             
-                Swal.fire('Hey &#128545; !', '<b>Merci de remplir tous les champs demandés...</b>', 'error');
-
-            } else {
-              let requestOptionsAdd = {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded",
-                },
-  
-                body: JSON.stringify({
-                  CODEAPPELLATION: selectAppellation,
-                  CODECOULEUR : selectColor,
-                  CODEREGION : selectRegion,
-                  NOM_CUVEE: AddNomVin,
-                  COMMENTAIRES : AddCommentaire,
-                  TYPE_DE_CULTURE : AddCulture
-                }),
-              };
-  
-              fetch(urlApiVins, requestOptionsAdd)
-                .then((response) => response.json())
-                .then(function (data) {
-                  $("#addModal").modal("hide");
-                  displayMsg(false,false,true,data)
-
-                })
-                .catch(function (error) {
-                  alert("Ajax error: " + error);
-                });
-            }
+            const code_option_generated_Appellation = document.createElement("option");
+            code_option_generated_Appellation.value = app[0];
+            code_option_generated_Appellation.innerText = app[1];
+            code_select_generated_Appellation.appendChild(code_option_generated_Appellation);
+            comboAppellation.appendChild(code_select_generated_Appellation);
           });
-      });
+        });
+      
+      // combo des couleurs
+      fetch(urlApiCouleur, requestOptionsGet)
+        .then((response) => response.json())
+        .then(function (data) {
+          const comboColor = document.getElementById("comboColor");
+      
+          data.COULEUR.records.forEach((couleur) => {
+            const code_option_generated_color = document.createElement("option");
+            code_option_generated_color.value = couleur[0];
+            code_option_generated_color.innerText = couleur[1];
+            code_select_generated_color.appendChild(code_option_generated_color);
+            comboColor.appendChild(code_select_generated_color);
+          });
+        });
+      
+      // combo des regions
+      fetch(urlApiRegion, requestOptionsGet)
+        .then((response) => response.json())
+        .then(function (data) {
+          const comboRegion = document.getElementById("comboRegion");
+      
+          data.REGION.records.forEach((vin) => {
+            const code_option_generated_region = document.createElement("option");
+            code_option_generated_region.value = vin[0];
+            code_option_generated_region.innerText = vin[2];
+            code_select_generated_region.appendChild(code_option_generated_region);
+            comboRegion.appendChild(code_select_generated_region);
+          });
+        });
+    
+  
+         // evenement d'ajout
+        document.getElementById("new_wine").addEventListener("click", () => {
+          $(".modal-addNomAppellation").html("Appellation");
+          $(".modal-addNomCouleur").html("Couleur");
+          $(".modal-addNomRegion").html("Région");
+          $(".modal-addNomVin").html("Nom du vin");
+          $(".modal-addCulture").html("Culture");
+          $(".modal-addCommentaire").html("Commentaires");
+  
+    
+          $("#addModal").modal("show");
+    
+          document.getElementById("saveChangesBtnAdd").addEventListener("click", () => {
+              const AddNomVin =document.getElementById("nomVin").value;
+              const AddCulture =document.getElementById("culture").value;
+              const AddCommentaire =document.getElementById("commentaire").value;
+  
+              const selectAppellation = document.getElementById("id_selectAppellation").value;
+              const selectColor = document.getElementById("id_selectColor").value;
+              const selectRegion = document.getElementById("id_selectRegion").value;
+  
+              console.log(selectAppellation);
+  
+              if (AddNomVin.length === 0 || AddCulture.length === 0 || AddCommentaire.length === 0) {
+               
+                  Swal.fire('Hey &#128545; !', '<b>Merci de remplir tous les champs demandés...</b>', 'error');
+  
+              } else {
+                let requestOptionsPost = {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                  },
+    
+                  body: JSON.stringify({
+                    CODEAPPELLATION: selectAppellation,
+                    CODECOULEUR : selectColor,
+                    CODEREGION : selectRegion,
+                    NOM_CUVEE: AddNomVin,
+                    COMMENTAIRES : AddCommentaire,
+                    TYPE_DE_CULTURE : AddCulture
+                  }),
+                };
+    
+                fetch(urlApiVins, requestOptionsPost)
+                  .then((response) => response.json())
+                  .then(function (data) {
+                    $("#addModal").modal("hide");
+                    displayMsg(false,false,true,data)
+  
+                  })
+                  .catch(function (error) {
+                    alert("Ajax error: " + error);
+                  });
+              }
+            });
+        });
+      }
+            
+     
   
       //DISPLAY // 
    
@@ -256,14 +263,14 @@ window.addEventListener("load", () => {
               if (result.isConfirmed) {
                 table.removeChild(row);
       
-                let requestOptions = {
+                let requestOptionsDelete = {
                   method: "DELETE",
                   headers: {
                     "Content-Type": "application/json",
                   },
                 };
 
-                fetch(urlApiVins + "/" + codeVin, requestOptions)
+                fetch(urlApiVins + "/" + codeVin, requestOptionsDelete)
                   .then((response) => response.json())
                   .then(function () {
                     displayMsg(true, false, false, codeVin);
@@ -291,7 +298,7 @@ window.addEventListener("load", () => {
 
 
               // combo des appellations
-      fetch(urlApiAppellation, requestOptions)
+      fetch(urlApiAppellation, requestOptionsGet)
       .then((response) => response.json())
       .then(function (data) {
         const comboAppellation = document.getElementById("comboModifAppellation");
@@ -307,7 +314,7 @@ window.addEventListener("load", () => {
       });
     
     // combo des couleurs
-    fetch(urlApiCouleur, requestOptions)
+    fetch(urlApiCouleur, requestOptionsGet)
       .then((response) => response.json())
       .then(function (data) {
         const comboColor = document.getElementById("comboEditColor");
@@ -322,7 +329,7 @@ window.addEventListener("load", () => {
       });
     
     // combo des regions
-    fetch(urlApiRegion, requestOptions)
+    fetch(urlApiRegion, requestOptionsGet)
       .then((response) => response.json())
       .then(function (data) {
         const comboRegion = document.getElementById("comboEditRegion");
@@ -380,7 +387,7 @@ window.addEventListener("load", () => {
                   const selectRegion = document.getElementById("id_selectEditRegion").value;
     
                     
-                  let requestOptionsEdit = {
+                  let requestOptionsPut = {
                     method: "PUT",
                     headers: {
                       "Content-Type": "application/x-www-form-urlencoded",
@@ -397,7 +404,7 @@ window.addEventListener("load", () => {
                   };
         
                
-                    fetch(urlApiVins + "/" + code, requestOptionsEdit)
+                    fetch(urlApiVins + "/" + code, requestOptionsPut)
                       .then((response) => response.json())
                       .then(function () {
     
@@ -412,8 +419,8 @@ window.addEventListener("load", () => {
                       .catch(function (error) {
                         alert("Ajax error: " + error);
                       });     
-                    }              
-          });
+             }              
+           });
          });
        });
       }
@@ -433,7 +440,6 @@ window.addEventListener("load", () => {
               rowElement.classList.add('flash-animation');
               setTimeout(() => {
                 rowElement.classList.remove('flash-animation');
-                location.reload()
               }, 2000);
             }
           });
@@ -460,7 +466,7 @@ window.addEventListener("load", () => {
             let Culture = row.cells[5].textContent;
             let Commentaires = row.cells[6].textContent;
    
-            let modalTitle = document.querySelector('#viewModal .modal-title');
+            let modalTitle = document.querySelector('.modal-title');
             
             modalTitle.innerHTML = 
             "Code vin : " + codeVin + "<br><br>Nom du vin : " + nomVin + "<br><br>Appellation : " 
@@ -471,8 +477,7 @@ window.addEventListener("load", () => {
           });
         }
       }
-  
-  }
+
 
   function searchWines() {
     const searchBarValue = document.getElementById('search').value;
@@ -516,14 +521,15 @@ window.addEventListener("load", () => {
   
   }
   
+  // initialisation du search
     const Input = document.getElementById("search");
-
   
     Input.addEventListener("input", (event) => {
       event.preventDefault();
       searchWines();
     });
 
+    // Initialisation de mes boutons de navigation
     const scrollDownButton = document.getElementById('scrollButton');
     const scrollTopButton = document.getElementById('scrollTopButton');
 
@@ -539,7 +545,9 @@ window.addEventListener("load", () => {
       topElement.scrollIntoView({ behavior: 'smooth' }); 
      }); 
 
-  
+
+     
+    // Appel de ma fonction principal qui va ensuite trigger les autres fonctions nécessaires un peu comme un effet domino :)
      manageWines(urlApiVins)
   });
   

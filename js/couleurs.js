@@ -4,53 +4,79 @@ window.addEventListener('load', () => {
   const msg = document.getElementById('msg');
   const limit = 10;
 
-  function manageColors(urlApiCouleur) {
-    let requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
+  colors = [];
 
-    fetch(urlApiCouleur, requestOptions)
-      .then((response) => response.json())
-      .then(function (data) {
-        data.COULEUR.records.forEach(function (record) {
-          let tr = document.createElement("tr");
-          tr.setAttribute('class','data');
-          let actionsTd = document.createElement("td");
-          actionsTd.innerHTML = `
-            <button class="modif btn btn-info btn-sm fas fa-pencil-alt fa-sm"></button>
-            <button class="delete btn btn-danger btn-sm fas fa-trash-alt fa-sm"></button>
-            <button class="view btn btn-success btn-sm fas fa-eye fa-sm"></button>
-          `;
 
-          record.forEach(function (value) {
-            let td = document.createElement("td");
-            td.textContent = value;
-            tr.appendChild(td);
-          });
 
-          tr.appendChild(actionsTd);
-          table.appendChild(tr);
+ 
 
-          let count =  0;
+function manageColors(urlApiCouleur) {
 
-          for (let i = 0; i < table.rows.length; i++) {  // je check le nombre de lignes générées en fonction de ce qu'il y a dans l'API
-            if (table.rows[i].nodeName === "TR") {
-              count++;
-            }
-          }
+  let requestOptionsGet = {
+    method: "GET",
+    redirect: "follow",
+  };
 
-          if (count > limit) {  // si le nombre de tr dépasse la limite alors j'affiche le bouton qui me permet de scroll tout en bas
-            scrollTopButton.style.visibility = "visible";
-            scrollDownButton.style.visibility = "visible";
-          } else {
-            scrollTopButton.style.visibility = "hidden";
-            scrollDownButton.style.visibility = "hidden";
-          }
-          
-        });
+  fetch(urlApiCouleur, requestOptionsGet)
+    .then((response) => response.json())
+    .then(function (data) {
+      colors = data;
 
+      display();
+      addColor();
+      deleteColor();
+      editColor();
+      viewColor();
+    })
+    .catch(function (error) {
+      alert('Ajax error: ' + error);
+    });
+}
+
+
+function display(){
+    
+  colors.COULEUR.records.forEach(function (record) {
+    let tr = document.createElement("tr");
+    tr.setAttribute('class','data');
+    let actionsTd = document.createElement("td");
+    actionsTd.innerHTML = `
+      <button class="modif btn btn-info btn-sm fas fa-pencil-alt fa-sm"></button>
+      <button class="delete btn btn-danger btn-sm fas fa-trash-alt fa-sm"></button>
+      <button class="view btn btn-success btn-sm fas fa-eye fa-sm"></button>
+    `;
+
+    record.forEach(function (value) {
+      let td = document.createElement("td");
+      td.textContent = value;
+      tr.appendChild(td);
+    });
+
+    tr.appendChild(actionsTd);
+    table.appendChild(tr);
+
+    let count =  0;
+
+    for (let i = 0; i < table.rows.length; i++) {  // je check le nombre de lignes générées en fonction de ce qu'il y a dans l'API
+      if (table.rows[i].nodeName === "TR") {
+        count++;
+      }
+    }
+
+    if (count > limit) {  // si le nombre de tr dépasse la limite alors j'affiche le bouton qui me permet de scroll tout en bas
+      scrollTopButton.style.visibility = "visible";
+      scrollDownButton.style.visibility = "visible";
+    } else {
+      scrollTopButton.style.visibility = "hidden";
+      scrollDownButton.style.visibility = "hidden";
+    }
+    
+  });
+
+}
                   /////////// ADD //////////////
+
+     function addColor(){
 
         document.getElementById('new_color').addEventListener('click', () => {
           $('.modal-addColor').html("Ajouter une couleur");
@@ -69,7 +95,7 @@ window.addEventListener('load', () => {
                 NOMCOULEUR: AddColorInput.value ,
               };
 
-              let requestOptionsAdd = {
+              let requestOptionsPut = {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json"
@@ -77,7 +103,7 @@ window.addEventListener('load', () => {
                 body: JSON.stringify(newDataToAdd)
               };
 
-              fetch(urlApiCouleur, requestOptionsAdd)
+              fetch(urlApiCouleur, requestOptionsPut)
                 .then((response) => response.json())
                 .then(function (data) {
                   $('#addModal').modal('hide');
@@ -89,111 +115,122 @@ window.addEventListener('load', () => {
             }
           });
         });
-              /////////// DELETE //////////////
 
-        let btnDelete = document.getElementsByClassName('delete');
-        for (let i = 0; i < btnDelete.length; i++) {
-          btnDelete[i].addEventListener('click', function () {
-            let row = this.parentNode.parentNode;
-            let codeCouleur = row.childNodes[0].textContent;
-
-            Swal.fire({
-              title :"&#128552;",
-              html: "<b>Vous êtes sûr de vouloir modifier la couleur numéro " + codeCouleur + " ?</b>",
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Oui',
-              cancelButtonText: 'Non'
-            }).then((result) => {
-              if (result.isConfirmed) { 
-                table.removeChild(row);
-
-                let requestOptions = {
-                  method: "DELETE",
-                  headers: {
-                    "Content-Type": "application/json"
-                  }
-                };
-    
-                fetch(urlApiCouleur + "/" + codeCouleur, requestOptions)
-                  .then((response) => response.json())
-                  .then(function () {
-                    displayMsg(true,false,false,codeCouleur)
-                  })
-                  .catch(function (error) {
-                    alert("Ajax error: " + error);
-                  });
-               } })
-          });
         }
+
+              /////////// DELETE //////////////
+          function deleteColor(){
+            let btnDelete = document.getElementsByClassName('delete');
+            for (let i = 0; i < btnDelete.length; i++) {
+              btnDelete[i].addEventListener('click', function () {
+                let row = this.parentNode.parentNode;
+                let codeCouleur = row.childNodes[0].textContent;
+    
+                Swal.fire({
+                  title :"&#128552;",
+                  html: "<b>Vous êtes sûr de vouloir modifier la couleur numéro " + codeCouleur + " ?</b>",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonText: 'Oui',
+                  cancelButtonText: 'Non'
+                }).then((result) => {
+                  if (result.isConfirmed) { 
+                    table.removeChild(row);
+    
+                    let requestOptionsDelete = {
+                      method: "DELETE",
+                      headers: {
+                        "Content-Type": "application/json"
+                      }
+                    };
+        
+                    fetch(urlApiCouleur + "/" + codeCouleur, requestOptionsDelete)
+                      .then((response) => response.json())
+                      .then(function () {
+                        displayMsg(true,false,false,codeCouleur)
+                      })
+                      .catch(function (error) {
+                        alert("Ajax error: " + error);
+                      });
+                   } })
+              });
+            }
+
+          }
+     
               /////////// MODIF //////////////
 
-        let btnModif = document.getElementsByClassName('modif');
-        for (let i = 0; i < btnModif.length; i++) {
-          btnModif[i].addEventListener('click', function () {
-            const row = this.parentNode.parentNode;
-            const code = row.cells[0].textContent;
+          function editColor(){
 
-            $('.modal-CouleurEdit').html("Editer Couleur");
-
-            $('#editModal').modal('show');
-
-            const ColorInput = document.getElementById('editCouleur');
-            ColorInput.value = row.cells[1].textContent;
+            let btnModif = document.getElementsByClassName('modif');
+            for (let i = 0; i < btnModif.length; i++) {
+              btnModif[i].addEventListener('click', function () {
+                const row = this.parentNode.parentNode;
+                const code = row.cells[0].textContent;
+    
+                $('.modal-CouleurEdit').html("Editer Couleur");
+    
+                $('#editModal').modal('show');
+    
+                const ColorInput = document.getElementById('editCouleur');
+                ColorInput.value = row.cells[1].textContent;
+            
+                document.getElementById('saveChangesBtn').addEventListener('click', () => {
+    
+                  Swal.fire({
+                    title :"&#128552;",
+                    html: "<b>Vous êtes sûr de vouloir modifier l'appellation numéro " + code + " ?</b>",
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Oui',
+                    cancelButtonText: 'Non'
+                  }).then((result) => {
+                    if (result.isConfirmed) { 
+    
+                      const newData = {
+                        NOMCOULEUR: ColorInput.value,
+                      };
         
-            document.getElementById('saveChangesBtn').addEventListener('click', () => {
+                      let requestOptionsPut = {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(newData)
+                      };
+        
+                      fetch(urlApiCouleur + "/" + code, requestOptionsPut)
+                        .then((response) => response.json())
+                        .then(function () {
+                         row.cells[1].textContent =  ColorInput.value.toUpperCase();
+                         displayMsg(false,true,false,code,row)
+                          $('#editModal').modal('hide');
+                        })
+                        .catch(function (error) {
+                          alert("Ajax error: " + error);
+                        });
+                     } });          
+                });
+              });
+            }
 
-              Swal.fire({
-                title :"&#128552;",
-                html: "<b>Vous êtes sûr de vouloir modifier l'appellation numéro " + code + " ?</b>",
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonText: 'Oui',
-                cancelButtonText: 'Non'
-              }).then((result) => {
-                if (result.isConfirmed) { 
+          }
+      
+          function viewColor(){
 
-                  const newData = {
-                    NOMCOULEUR: ColorInput.value,
-                  };
-    
-                  let requestOptions = {
-                    method: "PUT",
-                    headers: {
-                      "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(newData)
-                  };
-    
-                  fetch(urlApiCouleur + "/" + code, requestOptions)
-                    .then((response) => response.json())
-                    .then(function () {
-                     row.cells[1].textContent =  ColorInput.value.toUpperCase();
-                     displayMsg(false,true,false,code,row)
-                      $('#editModal').modal('hide');
-                    })
-                    .catch(function (error) {
-                      alert("Ajax error: " + error);
-                    });
-                 } });          
-            });
-          });
-        }
+            let btnVue = document.getElementsByClassName('view');
+            for (let i = 0; i < btnVue.length; i++) {
+              btnVue[i].addEventListener('click', function () {
+                let row = this.parentNode.parentNode;
+                $('#viewModal').modal('show');
+                $('.modal-title').html("Code couleur : " + row.cells[0].textContent +
+                  "<br>Couleur : " + row.cells[1].textContent);
+              });
+            }
+          }
+       
 
-        let btnVue = document.getElementsByClassName('view');
-        for (let i = 0; i < btnVue.length; i++) {
-          btnVue[i].addEventListener('click', function () {
-            let row = this.parentNode.parentNode;
-            $('#viewModal').modal('show');
-            $('.modal-title').html("Code couleur : " + row.cells[0].textContent +
-              "<br>Couleur : " + row.cells[1].textContent);
-          });
-        }
-      })
-      .catch(function (error) {
-        alert('Ajax error: ' + error);
-      });
-  }
+
 
   function displayMsg(deleteRow, editRow,addedRow, row, rowObj = null) {
       
@@ -208,7 +245,6 @@ window.addEventListener('load', () => {
           rowElement.classList.add('flash-animation');
           setTimeout(() => {
             rowElement.classList.remove('flash-animation');
-            location.reload()
           }, 2000);
         }
       });
@@ -224,7 +260,7 @@ window.addEventListener('load', () => {
           /////////// SEARCH //////////////
 
           function searchColors() {
-            const searchBarValue = $("#search").val();
+            const searchBarValue = document.getElementById('search').value;
             const rows = table.getElementsByClassName("data");
             let matchesFound = false; // flag
             msg.innerHTML ="";
@@ -289,4 +325,5 @@ window.addEventListener('load', () => {
           }); 
 
   manageColors(urlApiCouleur);
+
 });

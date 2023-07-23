@@ -1,19 +1,42 @@
 window.addEventListener("load", () => {
   const table = document.getElementById("table_id");
   table.className = "table table-danger table-hover container mt-5 text-center";
+
   const msg = document.getElementById("msg");
   const limit = 10;
+  let regions = [];
+
+  const requestOptionsGet = {
+    method: "GET",
+    redirect: "follow",
+  };
 
   function manageRegions(urlApiRegion) {
-    let requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
 
-    fetch(urlApiRegion + "?include=PAYS&transform=1", requestOptions)
+
+    fetch(urlApiRegion + "?include=PAYS&transform=1", requestOptionsGet)
       .then((response) => response.json())
       .then(function (data) {
-        data.REGION.map(function (regionElement) {
+        regions = data;
+
+        display();
+        addRegions();
+        deleteRegion();
+        editRegion();
+        viewRegion();
+      })
+      .catch(function (error) {
+        console.log(
+          "Une erreur s'est produite lors de la récupération des données :",
+          error
+        );
+      });
+
+  }
+  
+
+      function display(){
+        regions.REGION.map(function (regionElement) {
           let tr = document.createElement("tr");
           tr.setAttribute('class','data'); // je met une classe data à toute mes lignes dans le but de pouvoir en afficher certaines et d'en cachet d'autres tout en évitant de filtrer la tr contenant mes th
           let codeRegionTd = document.createElement("td");
@@ -61,75 +84,70 @@ window.addEventListener("load", () => {
           }
 
         });
+      }
 
-        deleteRegion();
-        editRegion();
-        viewRegion();
-      })
-      .catch(function (error) {
-        console.log(
-          "Une erreur s'est produite lors de la récupération des données :",
-          error
-        );
-      });
 
     /////////// ADD ///////////
 
-    fetch(urlApiPays, requestOptions)
-      .then((response) => response.json())
-      .then(function (data) {
-        const code_select_generated = document.createElement("select");
-        code_select_generated.setAttribute("id", "id_select");
-        const combo = document.getElementById("comboRegion");
+   function addRegions(){
 
-        for (let i = 0; i < data.PAYS.records.length; i++) {
+    fetch(urlApiPays, requestOptionsGet)
+    .then((response) => response.json())
+    .then(function (data) {
+      const code_select_generated = document.createElement("select");
+      code_select_generated.setAttribute("id", "id_select");
+      const combo = document.getElementById("comboRegion");
 
-          let code_option_generated = document.createElement("option");
-          code_option_generated.value = data.PAYS.records[i][0]; // tout les code pays (donc l'index 0 par rapport à la structure de l'api pays)
-          code_option_generated.innerText = data.PAYS.records[i][1]; //tout les noms de pays (donc l'index 1 par rapport à la structure de l'api pays)
-          code_select_generated.appendChild(code_option_generated);
-        }
-        combo.appendChild(code_select_generated);
-      });
+      for (let i = 0; i < data.PAYS.records.length; i++) {
 
-    document.getElementById("new_region").addEventListener("click", () => {
-      $(".modal-addNomPays").html("Ajouter un pays");
-      $(".modal-addNomRegion").html("Ajouter une région");
-
-      $("#addModal").modal("show");
-
-      document.getElementById("saveChangesBtnAdd").addEventListener("click", () => {
-          const AddNomRegionInput =document.getElementById("addNomRegion").value;
-          const select = document.getElementById("id_select").value;
-          if (AddNomRegionInput.length === 0) {
-            
-            Swal.fire('Hey &#128545; !', '<b>Merci de remplir tous les champs demandés...</b>', 'error');
-
-          } else {
-            let requestOptionsAdd = {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
-
-              body: JSON.stringify({
-                CODEPAYS: select,
-                NOMREGION: AddNomRegionInput,
-              }),
-            };
-
-            fetch(urlApiRegion, requestOptionsAdd)
-              .then((response) => response.json())
-              .then(function (data) {
-                $("#addModal").modal("hide");
-               displayMsg(false,false,true,data);
-              })
-              .catch(function (error) {
-                alert("Ajax error: " + error);
-              });
-          }
-        });
+        let code_option_generated = document.createElement("option");
+        code_option_generated.value = data.PAYS.records[i][0]; // tout les code pays (donc l'index 0 par rapport à la structure de l'api pays)
+        code_option_generated.innerText = data.PAYS.records[i][1]; //tout les noms de pays (donc l'index 1 par rapport à la structure de l'api pays)
+        code_select_generated.appendChild(code_option_generated);
+      }
+      combo.appendChild(code_select_generated);
     });
+
+  document.getElementById("new_region").addEventListener("click", () => {
+    $(".modal-addNomPays").html("Ajouter un pays");
+    $(".modal-addNomRegion").html("Ajouter une région");
+
+    $("#addModal").modal("show");
+
+    document.getElementById("saveChangesBtnAdd").addEventListener("click", () => {
+        const AddNomRegionInput =document.getElementById("addNomRegion").value;
+        const select = document.getElementById("id_select").value;
+        if (AddNomRegionInput.length === 0) {
+          
+          Swal.fire('Hey &#128545; !', '<b>Merci de remplir tous les champs demandés...</b>', 'error');
+
+        } else {
+          let requestOptionsPost = {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+
+            body: JSON.stringify({
+              CODEPAYS: select,
+              NOMREGION: AddNomRegionInput,
+            }),
+          };
+
+          fetch(urlApiRegion, requestOptionsPost)
+            .then((response) => response.json())
+            .then(function (data) {
+              $("#addModal").modal("hide");
+             displayMsg(false,false,true,data);
+            })
+            .catch(function (error) {
+              alert("Ajax error: " + error);
+            });
+         }
+      });
+  });
+}
+   
 
 
     // DELETE  
@@ -157,14 +175,14 @@ window.addEventListener("load", () => {
       
               table.removeChild(row);
       
-              let requestOptions = {
+              let requestOptionsDelete = {
                 method: "DELETE",
                 headers: {
                   "Content-Type": "application/json",
                 },
               };
       
-              fetch(urlApiRegion + "/" + codeRegion, requestOptions)
+              fetch(urlApiRegion + "/" + codeRegion, requestOptionsDelete)
                 .then((response) => response.json())
                 .then(function () {
                   displayMsg(true,false,false,codeRegion)
@@ -172,12 +190,8 @@ window.addEventListener("load", () => {
                 .catch(function (error) {
                   alert("Ajax error: " + error);
                 });
-
-
-
-            } 
-          });
-         
+             } 
+          });  
         });
       }
     }
@@ -185,7 +199,7 @@ window.addEventListener("load", () => {
 
     function editRegion(){
 
-      fetch(urlApiPays, requestOptions)
+      fetch(urlApiPays, requestOptionsGet)
       .then((response) => response.json())
       .then(function (data) {
         const code_select_generated = document.createElement("select");
@@ -237,7 +251,7 @@ window.addEventListener("load", () => {
                   NOMREGION : EditNomRegionInput
                 };
     
-                let requestOptions = {
+                let requestOptionsPut = {
                   method: "PUT",
                   headers: {
                     "Content-Type": "application/json",
@@ -245,7 +259,7 @@ window.addEventListener("load", () => {
                   body: JSON.stringify(newData),
                 };
     
-                fetch(urlApiRegion + "/" + code, requestOptions)
+                fetch(urlApiRegion + "/" + code, requestOptionsPut)
                   .then((response) => response.json())
                   .then(function () {
                     row.cells[2].textContent = NomRegionInput.value;
@@ -281,7 +295,6 @@ window.addEventListener("load", () => {
       }
     }
 
-}
 
 function displayMsg(deleteRow, editRow,addedRow, row, rowObj = null) {
       
@@ -296,7 +309,6 @@ function displayMsg(deleteRow, editRow,addedRow, row, rowObj = null) {
         rowElement.classList.add('flash-animation');
         setTimeout(() => {
           rowElement.classList.remove('flash-animation');
-          location.reload()
         }, 2000);
       }
     });
@@ -342,7 +354,6 @@ function searchRegions() {
   }
 
   if (!matchesFound) {
-
     table.style.visibility = "hidden";
     scrollDownButton.style.visibility = "hidden";
     scrollTopButton.style.visibility = "hidden";
@@ -361,7 +372,6 @@ Input.addEventListener("input", (event) => {
   searchRegions();
 });
 
-  
   scrollDownButton.addEventListener('click', function() {
     const full_page = document.documentElement; // document.documentElement represente toute ma page 
     full_page.scrollIntoView({ behavior: 'smooth', block: 'end' }); // j'utilise la fonction scrollIntoView qui me permet d'aller en bas de la page de manière 'smooth'

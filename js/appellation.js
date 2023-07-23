@@ -1,138 +1,165 @@
 window.addEventListener('load', () => {
   const table = document.getElementById('table_id');
   table.className = "table table-danger table-hover container mt-5 text-center";
+
   const msg = document.getElementById('msg');
   const limit = 10;
 
+  let appellations = [];
+
   function manageAppellations(urlApiAppellation) {
-    let requestOptions = {
+
+    let requestOptionsGet = {
       method: "GET",
       redirect: "follow",
     };
-
-    fetch(urlApiAppellation, requestOptions)
+    
+    fetch(urlApiAppellation, requestOptionsGet)
       .then((response) => response.json())
       .then(function (data) {
-        data.APPELLATION.records.forEach(function (record) {
-          let tr = document.createElement("tr");
-          tr.setAttribute('class','data');
+        appellations = data;
+  
+        display();
+        addAppellation();
+        deleteAppellation();
+        editAppellation();
+        viewAppellation();
+      })
+      .catch(function (error) {
+        alert('Ajax error: ' + error);
+      });
+  }
 
-          let actionsTd = document.createElement("td");
-          actionsTd.innerHTML = `
-            <button class="modif btn btn-info btn-sm fas fa-pencil-alt fa-sm"></button>
-            <button class="delete btn btn-danger btn-sm fas fa-trash-alt fa-sm"></button>
-            <button class="view btn btn-success btn-sm fas fa-eye fa-sm"></button>
-          `;
+  function display(){
 
-          record.forEach(function (value) {
-            let td = document.createElement("td");
-            td.textContent = value;
-            tr.appendChild(td);
-          });
+    appellations.APPELLATION.records.forEach(function (record) {
+      let tr = document.createElement("tr");
+      tr.setAttribute('class','data');
 
-          tr.appendChild(actionsTd);
-          table.appendChild(tr);
+      let actionsTd = document.createElement("td");
+      actionsTd.innerHTML = `
+        <button class="modif btn btn-info btn-sm fas fa-pencil-alt fa-sm"></button>
+        <button class="delete btn btn-danger btn-sm fas fa-trash-alt fa-sm"></button>
+        <button class="view btn btn-success btn-sm fas fa-eye fa-sm"></button>
+      `;
 
-          let count =  0;
+      record.forEach(function (value) {
+        let td = document.createElement("td");
+        td.textContent = value;
+        tr.appendChild(td);
+      });
 
-          for (let i = 0; i < table.rows.length; i++) {  // je check le nombre de lignes générées en fonction de ce qu'il y a dans l'API
-            if (table.rows[i].nodeName === "TR") {
-              count++;
-            }
-          }
+      tr.appendChild(actionsTd);
+      table.appendChild(tr);
 
-          if (count > limit) {  // si le nombre de tr dépasse la limite alors j'affiche le bouton qui me permet de scroll tout en bas
-            scrollTopButton.style.visibility = "visible";
-            scrollDownButton.style.visibility = "visible";
-          } else {
-            scrollTopButton.style.visibility = "hidden";
-            scrollDownButton.style.visibility = "hidden";
-          }
+      let count =  0;
 
-        });
+      for (let i = 0; i < table.rows.length; i++) {  // je check le nombre de lignes générées en fonction de ce qu'il y a dans l'API
+        if (table.rows[i].nodeName === "TR") {
+          count++;
+        }
+      }
+
+      if (count > limit) {  // si le nombre de tr dépasse la limite alors j'affiche le bouton qui me permet de scroll tout en bas
+        scrollTopButton.style.visibility = "visible";
+        scrollDownButton.style.visibility = "visible";
+      } else {
+        scrollTopButton.style.visibility = "hidden";
+        scrollDownButton.style.visibility = "hidden";
+      }
+
+    });
+
+  }
+
 
                   /////////// ADD //////////////
+    function addAppellation(){
 
-        document.getElementById('new_appellation').addEventListener('click', () => {
-          $('.modal-addAppellation').html("Ajouter une appellation");
+      document.getElementById('new_appellation').addEventListener('click', () => {
+        $('.modal-addAppellation').html("Ajouter une appellation");
 
-          $('#addModal').modal('show');
+        $('#addModal').modal('show');
 
-          document.getElementById('saveChangesBtnAdd').addEventListener('click', () => {
-            const AddAppellationInput = document.getElementById('addAppellation');
-           
+        document.getElementById('saveChangesBtnAdd').addEventListener('click', () => {
+          const AddAppellationInput = document.getElementById('addAppellation');
+         
 
-            if (AddAppellationInput.value.length === 0 ) {
-              Swal.fire('Hey &#128545; !', '<b>Merci de remplir tous les champs demandés...</b>', 'error');
+          if (AddAppellationInput.value.length === 0 ) {
+            Swal.fire('Hey &#128545; !', '<b>Merci de remplir tous les champs demandés...</b>', 'error');
 
-            } else {
-              newDataToAdd = {
-                NOMAPPELLATION: AddAppellationInput.value
-              };
+          } else {
+            newDataToAdd = {
+              NOMAPPELLATION: AddAppellationInput.value
+            };
 
-              let requestOptionsAdd = {
-                method: "POST",
+            let requestOptionsAdd = {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(newDataToAdd)
+            };
+
+            fetch(urlApiAppellation, requestOptionsAdd)
+              .then((response) => response.json())
+              .then(function (data) {
+                $('#addModal').modal('hide');
+                displayMsg(false,false,true,data);
+              })
+              .catch(function (error) {
+                alert("Ajax error: " + error);
+              });
+          }
+        });
+      });
+
+    }
+      
+              /////////// DELETE //////////////
+    function deleteAppellation(){
+      let btnDelete = document.getElementsByClassName('delete');
+      for (let i = 0; i < btnDelete.length; i++) {
+        btnDelete[i].addEventListener('click', function () {
+          let row = this.parentNode.parentNode;
+          const codeAppellation = row.childNodes[0].textContent;
+
+          Swal.fire({
+            title :"&#128552;",
+            html: "<b>Vous êtes sûr de vouloir supprimer l'appellation numéro " + codeAppellation + " ?</b>",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Oui',
+            cancelButtonText: 'Non'
+          }).then((result) => {
+            if (result.isConfirmed) {
+
+              table.removeChild(row);
+
+              let requestOptions = {
+                method: "DELETE",
                 headers: {
                   "Content-Type": "application/json"
-                },
-                body: JSON.stringify(newDataToAdd)
+                }
               };
-
-              fetch(urlApiAppellation, requestOptionsAdd)
+  
+              fetch(urlApiAppellation + "/" + codeAppellation, requestOptions)
                 .then((response) => response.json())
-                .then(function (data) {
-                  $('#addModal').modal('hide');
-                  displayMsg(false,false,true,data);
+                .then(function () {
+                  displayMsg(true,false,false,codeAppellation)
                 })
                 .catch(function (error) {
                   alert("Ajax error: " + error);
                 });
-            }
+             }        
           });
-        });
-              /////////// DELETE //////////////
-
-              let btnDelete = document.getElementsByClassName('delete');
-              for (let i = 0; i < btnDelete.length; i++) {
-                btnDelete[i].addEventListener('click', function () {
-                  let row = this.parentNode.parentNode;
-                  const codeAppellation = row.childNodes[0].textContent;
-      
-                  Swal.fire({
-                    title :"&#128552;",
-                    html: "<b>Vous êtes sûr de vouloir supprimer l'appellation numéro " + codeAppellation + " ?</b>",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Oui',
-                    cancelButtonText: 'Non'
-                  }).then((result) => {
-                    if (result.isConfirmed) {
-      
-                      table.removeChild(row);
-      
-                      let requestOptions = {
-                        method: "DELETE",
-                        headers: {
-                          "Content-Type": "application/json"
-                        }
-                      };
-          
-                      fetch(urlApiAppellation + "/" + codeAppellation, requestOptions)
-                        .then((response) => response.json())
-                        .then(function () {
-                          displayMsg(true,false,false,codeAppellation)
-                        })
-                        .catch(function (error) {
-                          alert("Ajax error: " + error);
-                        });
-      
-                     }        
-                  });
-               });
-              }
+       });
+      }
+    }
+           
 
               /////////// MODIF //////////////
-
+      function editAppellation(){
         let btnModif = document.getElementsByClassName('modif');
         for (let i = 0; i < btnModif.length; i++) {
           btnModif[i].addEventListener('click', function () {
@@ -183,29 +210,27 @@ window.addEventListener('load', () => {
                     .catch(function (error) {
                       alert("Ajax error: " + error);
                     });
-
                  } 
-              
               });
-      
             });
           });
         }
-
-        let btnVue = document.getElementsByClassName('view');
-        for (let i = 0; i < btnVue.length; i++) {
-          btnVue[i].addEventListener('click', function () {
-            let row = this.parentNode.parentNode;
-            $('#viewModal').modal('show');
-            $('.modal-title').html("Code de l'appellation : " + row.cells[0].textContent +
-              "<br>Appellation : " + row.cells[1].textContent);
-          });
+      }
+      
+        function viewAppellation(){
+          let btnVue = document.getElementsByClassName('view');
+          for (let i = 0; i < btnVue.length; i++) {
+            btnVue[i].addEventListener('click', function () {
+              let row = this.parentNode.parentNode;
+              $('#viewModal').modal('show');
+              $('.modal-title').html("Code de l'appellation : " + row.cells[0].textContent +
+                "<br>Appellation : " + row.cells[1].textContent);
+            });
+          }
         }
-      })
-      .catch(function (error) {
-        alert('Ajax error: ' + error);
-      });
-  }
+ 
+
+
 
 
   function displayMsg(deleteRow, editRow,addedRow, row, rowObj = null) {
@@ -221,7 +246,6 @@ window.addEventListener('load', () => {
           rowElement.classList.add('flash-animation');
           setTimeout(() => {
             rowElement.classList.remove('flash-animation');
-            location.reload()
           }, 2000);
         }
       });
@@ -233,8 +257,6 @@ window.addEventListener('load', () => {
       });
     }
   }
-
-
 
           /////////// SEARCH //////////////
 
@@ -303,4 +325,5 @@ window.addEventListener('load', () => {
           }); 
 
   manageAppellations(urlApiAppellation);
+
 });
