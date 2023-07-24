@@ -4,11 +4,8 @@ window.addEventListener('load', () => {
   const msg = document.getElementById('msg');
   const limit = 10;
 
-  colors = [];
+  let colors = [];
 
-
-
- 
 
 function manageColors(urlApiCouleur) {
 
@@ -202,7 +199,7 @@ function display(){
                       fetch(urlApiCouleur + "/" + code, requestOptionsPut)
                         .then((response) => response.json())
                         .then(function () {
-                         row.cells[1].textContent =  ColorInput.value.toUpperCase();
+                         row.cells[1].textContent =  ColorInput.value;
                          displayMsg(false,true,false,code,row)
                           $('#editModal').modal('hide');
                         })

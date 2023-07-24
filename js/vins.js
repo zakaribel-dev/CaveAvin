@@ -33,8 +33,7 @@ window.addEventListener("load", () => {
   
       /////////// ADD ///////////
       function addWine(){
-
-     
+        
         const code_select_generated_Appellation = document.createElement("select");
         code_select_generated_Appellation.setAttribute("id", "id_selectAppellation");
         const code_select_generated_color = document.createElement("select");

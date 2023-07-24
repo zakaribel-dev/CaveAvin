@@ -113,7 +113,6 @@ window.addEventListener('load', () => {
           }
         });
       });
-
     }
       
               /////////// DELETE //////////////
