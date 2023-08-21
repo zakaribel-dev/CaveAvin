@@ -38,7 +38,7 @@ function display(){
     tr.setAttribute('class','data');
     let actionsTd = document.createElement("td");
     actionsTd.innerHTML = `
-      <button class="modif btn btn-info btn-sm fas fa-pencil-alt fa-sm"></button>
+      <button class="modif btn btn-info btn-sm  fas fa-pencil-alt fa-sm"></button>
       <button class="delete btn btn-danger btn-sm fas fa-trash-alt fa-sm"></button>
       <button class="view btn btn-success btn-sm fas fa-eye fa-sm"></button>
     `;

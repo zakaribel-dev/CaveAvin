@@ -11,11 +11,11 @@ window.addEventListener("load", () => {
       redirect: "follow",
     };
 
-    
+
+  
     function manageWines(urlApiVins) {
         
-          fetch(urlApiVins + "?include=COULEUR,REGION,APPELLATION&transform=1", requestOptionsGet)
-            .then((response) => response.json())
+          fetch(urlApiVins + "?include=COULEUR,REGION,APPELLATION&transform=1", requestOptionsGet)  // appel avec retour des liens correspondants
             .then(function (data) {
               wines = data;
 
@@ -28,8 +28,7 @@ window.addEventListener("load", () => {
             .catch(function (error) {
               console.log("Une erreur s'est produite lors de la récupération des données :", error);
             });
-
-          }
+     }
   
       /////////// ADD ///////////
       function addWine(){
@@ -223,6 +222,7 @@ window.addEventListener("load", () => {
           tr.appendChild(actionsTd);
   
           table.appendChild(tr);
+          
           let count =  0;
   
           for (let i = 0; i < table.rows.length; i++) {  // je check le nombre de lignes générées en fonction de ce qu'il y a dans l'API
@@ -503,10 +503,10 @@ window.addEventListener("load", () => {
       }
   
       if (rowMatches) {
-        row.style.display = "";
-        matchesFound = true;
+        row.style.display = ""; // j'affiche la ou les  row qui ont matché !
+        matchesFound = true; 
       } else {
-        row.style.display = "none";
+        row.style.display = "none"; // j'affiche rien si rien ne match..
       }
     }
   
