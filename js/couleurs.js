@@ -1,6 +1,8 @@
 window.addEventListener('load', () => {
   const table = document.getElementById('table_id');
   table.className = "table table-danger table-hover container mt-5 text-center";
+  let loading = document.getElementById('loading-bar-spinner');
+  loading.style.visibility = "visible";
   const msg = document.getElementById('msg');
   const limit = 10;
 
@@ -18,6 +20,7 @@ function manageColors(urlApiCouleur) {
     .then((response) => response.json())
     .then(function (data) {
       colors = data;
+      loading.style.visibility = "hidden";
 
       display();
       addColor();
